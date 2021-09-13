@@ -80,16 +80,35 @@ def fetch_sample_list(input_structure, input_type):
 def import_dataframe(input_structure, input_type, sample_name):
 	print('TEST importdataframe 1')
 	if open_state == 2:
+		with open((os.path.join(output_path, experiment_name + "_experiment_import_parameters.pickle")), 'rb') as f:
+			experiment_info = pickle.load(f)
+
+
+
+		print(experiment_info.blanks_exist)
 		print('TEST importdataframe 2')
 
 		print(input_structure)
 		print(sample_name)
-		with open((os.path.join(input_structure, input_type, sample_name + "_all_replicates_dataframe.pickle")), 'rb') as f:
-			print('TEST importdataframe 3')
-			df = pickle.load(f)
-		f.close()
+		print(input_type)
+		if experiment_info.blanks_exist == True:
+			with open((os.path.join(input_structure, input_type, sample_name + "_all_replicates_blanked_dataframe.pickle")), 'rb') as f:
+				print('TEST importdataframe 3')
+				df = pickle.load(f)
+				# df = pandas.read_pickle(f)
+
+		else:
+
+			with open((os.path.join(input_structure, input_type, sample_name + "_all_replicates_dataframe.pickle")), 'rb') as f:
+				print('TEST importdataframe 3')
+				df = pickle.load(f)
+			print('TEST importdataframe 4')
+
+		print('TEST importdataframe 5')
+		print(df)
 	else:
 		df = []
+	print('TEST importdataframe 6')
 	return df
 
 
@@ -538,7 +557,13 @@ def import_ms2_dataframe(input_structure, input_type, sample_name):
 # input_structure = data_import.input_data_structure()
 
 
-
+# class NotEmptyValidator(QValidator):
+# 	def validate(self, text:str, pos):
+# 		if bool(text.strip()):
+# 			state = QValidator.Acceptable
+# 		else:
+# 			state = QValidator.Intermediate
+# 		return state, text, pos
 
 
 
@@ -1155,7 +1180,7 @@ class Window (QDialog):
 		self.mMinBox.setText('0')
 		self.mMinBox.setValidator(QIntValidator())
 		self.mMinBox.setAlignment(Qt.AlignRight)
-		self.mMinBox.setValidator(QRegExpValidator())
+		# self.mMinBox.setValidator(QRegExpValidator())
 
 
 		self.mMinBox.textChanged.connect(self.mMinLimit)
@@ -4555,21 +4580,35 @@ class Window (QDialog):
 				total_df = import_dataframe(output_path, input_type, comboText)
 				print('ANALYTE ID 3',total_df[total_df.analyte_id == 2])
 
+				print(chooseAnalyte)
 
 				if chooseAnalyte == "Sample Analyte ID":
+					print('Blank Test 1')
 					if NullState == True:
+
 						total_df = total_df.dropna(subset=['analyte_id'])
 						total_df=total_df[total_df.analyte_id != None]
+
 						
 					else:
 						pass
+
+
 					if BlankState == True:
-						total_df=total_df[total_df.blank_analyte != True]
+						print('Blank Test 2')
+						total_df=total_df[total_df.blank_analyte != False]
+						print('Blank Test 3')
 					else:
 						pass
+
+
+
+					print('Blank Test 4')
+
+
 					total_df=total_df[total_df.replicate != 2]
 					total_df=total_df[total_df.replicate != 3]
-
+					print('Blank Test 3')
 					total_mz_df = total_df[total_df.rt > float(state.return_rtMin_state())]
 					total_mz_df = total_mz_df[total_mz_df.rt < float(state.return_rtMax_state())]
 
