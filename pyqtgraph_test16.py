@@ -821,9 +821,9 @@ class Window (QDialog):
 		self.open_recent_action = QAction('Open Recent', app)
 		self.exit_action = QAction('Exit', app)
 		self.exit_action.triggered.connect(exit)
-		self.file_menu.addAction(self.new_action)
+
 		self.file_menu.addAction(self.open_action)
-		self.file_menu.addAction(self.open_recent_action)
+
 		self.file_menu.addAction(self.exit_action)
 
 

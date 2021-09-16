@@ -68,9 +68,9 @@ __author__ = 'Roger Linington'
 __copyright__ = 'Copyright 2019, Linington Lab'
 __credits__ = ['Roger Linington']
 __license__ = 'TBD'
-__version__ = '1.0.0'
-__maintainer__ = 'Roger Linington'
-__email__ = 'rliningt@sfu.ca'
+__version__ = '0.1.0'
+__maintainer__ = 'Roger Linington, Andre Cote'
+__email__ = 'rliningt@sfu.ca, andre_cote@sfu.ca'
 __status__ = 'Alpha'
 
 mass_error_da = 0.01
