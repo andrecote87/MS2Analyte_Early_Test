@@ -3,7 +3,8 @@
 """
 file open dialogue window for MS2Analyte
 """
-
+import fileinput
+import os
 import sys
 import time
 
@@ -13,6 +14,10 @@ from ms2analyte.Qt_Designer_templates.File_Dialogue.mainwindow_v2 import Ui_Main
 from ms2analyte.visualizations.file_open_model import PathManager, ExperimentParameters, InstrumentParameters, \
     ValidateSubmit
 from ms2analyte.ms2analyte_sample_process import run_analysis
+
+
+
+
 
 
 class MainWindowUIClass(Ui_MainWindow):
@@ -270,6 +275,34 @@ class MainWindowUIClass(Ui_MainWindow):
         else:
             for warning in warnings_list:
                 self.textBrowser.append(warning)
+
+
+    def threshold_value(self):
+
+        absolute_path = os.path.abspath(__file__)
+        print("Full path: ", absolute_path)
+        print("Directory Path: ", os.path.dirname(absolute_path))
+        print(self.ThresholdLineEdit.text())
+
+
+
+        # opening the file in read mode
+        file = open(os.path.join(os.path.dirname(absolute_path),'config.py'), "r")
+        print('test')
+        all_lines = file.readlines()
+        print(all_lines[78])
+
+        all_lines[78] = "intensity_cutoff = " + self.ThresholdLineEdit.text() + '\n'
+        print(all_lines[78])
+
+        with open(os.path.join(os.path.dirname(absolute_path),'config.py'), 'w') as output:
+
+            for row in all_lines:
+
+                output.write(str(row))
+
+
+
 
 
 def launch_gui():

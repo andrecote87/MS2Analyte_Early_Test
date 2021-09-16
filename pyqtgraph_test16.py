@@ -557,13 +557,13 @@ def import_ms2_dataframe(input_structure, input_type, sample_name):
 # input_structure = data_import.input_data_structure()
 
 
-# class NotEmptyValidator(QValidator):
-# 	def validate(self, text:str, pos):
-# 		if bool(text.strip()):
-# 			state = QValidator.Acceptable
-# 		else:
-# 			state = QValidator.Intermediate
-# 		return state, text, pos
+class NotEmptyValidator(QValidator):
+	def validate(self, text:str, pos):
+		if bool(text.strip()):
+			state = QValidator.Acceptable
+		else:
+			state = QValidator.Intermediate
+		return state, text, pos
 
 
 
@@ -1178,7 +1178,8 @@ class Window (QDialog):
   
 		self.mMinBox = QLineEdit(self)
 		self.mMinBox.setText('0')
-		self.mMinBox.setValidator(QIntValidator())
+		self.mMinBox.setValidator(QDoubleValidator())
+
 		self.mMinBox.setAlignment(Qt.AlignRight)
 		# self.mMinBox.setValidator(QRegExpValidator())
 
@@ -1212,8 +1213,8 @@ class Window (QDialog):
 
 
 
-		self.mMaxBox.setValidator(QIntValidator())
-		self.mMaxBox.setValidator(QRegExpValidator())
+
+		self.mMaxBox.setValidator(QDoubleValidator())
 		self.mMaxBox.setAlignment(Qt.AlignRight)
 		self.mMaxBox.textChanged.connect(self.mMaxLimit)
 
@@ -1224,8 +1225,8 @@ class Window (QDialog):
 
 		self.rtMinBox = QLineEdit(self)
 		self.rtMinBox.setText('0')
-		self.rtMinBox.setValidator(QIntValidator())
-		self.rtMinBox.setValidator(QRegExpValidator())
+
+		self.rtMinBox.setValidator(QDoubleValidator())
 		self.rtMinBox.setAlignment(Qt.AlignRight)
 		self.rtMinBox.textChanged.connect(self.rtMinLimit)
 
@@ -1241,8 +1242,8 @@ class Window (QDialog):
 
 
 
-		self.rtMaxBox.setValidator(QIntValidator())
-		self.rtMaxBox.setValidator(QRegExpValidator())
+
+		self.rtMaxBox.setValidator(QDoubleValidator())
 		self.rtMaxBox.setAlignment(Qt.AlignRight)
 		self.rtMaxBox.textChanged.connect(self.rtMaxLimit)
 
@@ -2912,6 +2913,90 @@ class Window (QDialog):
 
 
 
+
+
+
+
+				if chooseAnalyte == "Experiment Analyte ID":
+					print('Loading Replicate Tab')
+					for analyte_id in sorted_df_mz_r2.experiment_analyte_id.unique():
+
+						mz_array_r2.append([sorted_df_mz_r2[sorted_df_mz_r2["experiment_analyte_id"] == analyte_id]["mz"].to_numpy(),
+					                     sorted_df_mz_r2[sorted_df_mz_r2["experiment_analyte_id"] == analyte_id]["intensity"].to_numpy(),])
+
+						analyte_mz_array_r2.append(analyte_id)
+
+
+						
+
+
+
+					if Toggle_rt == True:
+					
+
+						for analyte_id in sorted_df_rt_r1.experiment_analyte_id.unique():
+							rt_array_r2.append([sorted_df_rt_r2[sorted_df_rt_r2["experiment_analyte_id"] == analyte_id]["rt"].to_numpy(),
+						                     sorted_df_rt_r2[sorted_df_rt_r2["experiment_analyte_id"] == analyte_id]["intensity"].to_numpy()])
+							analyte_rt_array_r2.append(analyte_id)
+					else:
+
+
+
+						for analyte_id in sorted_df_rt_r2.experiment_analyte_id.unique():
+							if analyte_id != None:
+								analyte_df = sorted_df_rt_r2[sorted_df_rt_r2.experiment_analyte_id == analyte_id]
+
+								max_scan_df = analyte_df[analyte_df.intensity == analyte_df.intensity.max()]
+
+								max_peak_id_array = max_scan_df.peak_id.to_numpy()
+								max_peak_id = int(max_peak_id_array[0])
+
+
+
+
+								sorted_df_rt1 = analyte_df[analyte_df.peak_id == int(max_peak_id)]
+
+			
+								rt_array_r2.append([sorted_df_rt1[sorted_df_rt1["experiment_analyte_id"] == analyte_id]["rt"].to_numpy(),
+							                     sorted_df_rt1[sorted_df_rt1["experiment_analyte_id"] == analyte_id]["intensity"].to_numpy()])
+								analyte_rt_array_r2.append(analyte_id)
+							else:
+								pass
+
+
+					analyte_mz_array_r2 = [0 if str(i) == 'nan' else i for i in analyte_mz_array_r2]
+
+					analyte_rt_array_r2 = [0 if str(i) == 'nan' else i for i in analyte_rt_array_r2]
+
+					analyte_mz_array_r2 = [0 if str(i) == 'None' else i for i in analyte_mz_array_r2]
+
+					analyte_rt_array_r2 = [0 if str(i) == 'None' else i for i in analyte_rt_array_r2]
+
+					analyte_colour_mz_array_r2 = [0]*len(analyte_mz_array_r2)
+					analyte_colour_rt_array_r2 = [0]*len(analyte_rt_array_r2)
+
+					i = 0
+					while i < len(analyte_mz_array_r2):
+						analyte_colour_mz_array_r2[i] = int((analyte_mz_array_r2[i] + 1) % 299)
+						i+=1
+
+
+					i = 0
+					while i < len(analyte_rt_array_r2):
+
+						analyte_colour_rt_array_r2[i] = int((analyte_rt_array_r2[i] + 1) % 299)
+						i+=1
+
+
+
+
+
+
+
+
+
+
+
 				self.rt_r2_plot.clear()
 				self.mz_r2_plot.clear()
 				print('Loading Replicate Tab')
@@ -3204,6 +3289,101 @@ class Window (QDialog):
 
 						analyte_colour_rt_array_r3[i] = int((analyte_rt_array_r3[i] + 1) % 299)
 						i+=1
+
+
+				if chooseAnalyte == "Experiment Analyte ID":
+
+
+					for analyte_id in sorted_df_mz_r3.experiment_analyte_id.unique():
+
+						mz_array_r3.append([sorted_df_mz_r3[sorted_df_mz_r3["experiment_analyte_id"] == analyte_id]["mz"].to_numpy(),
+					                     sorted_df_mz_r3[sorted_df_mz_r3["experiment_analyte_id"] == analyte_id]["intensity"].to_numpy(),])
+
+						analyte_mz_array_r3.append(analyte_id)
+
+
+						
+
+					print('Loading Replicate Tab')
+
+					if Toggle_rt == True:
+					
+
+						for analyte_id in sorted_df_rt_r3.experiment_analyte_id.unique():
+							rt_array_r3.append([sorted_df_rt_r3[sorted_df_rt_r3["experiment_analyte_id"] == analyte_id]["rt"].to_numpy(),
+						                     sorted_df_rt_r3[sorted_df_rt_r3["experiment_analyte_id"] == analyte_id]["intensity"].to_numpy()])
+							analyte_rt_array_r3.append(analyte_id)
+					else:
+
+
+
+						for analyte_id in sorted_df_rt_r3.experiment_analyte_id.unique():
+							if analyte_id != None:
+								analyte_df = sorted_df_rt_r3[sorted_df_rt_r3.experiment_analyte_id == analyte_id]
+
+								max_scan_df = analyte_df[analyte_df.intensity == analyte_df.intensity.max()]
+
+								max_peak_id_array = max_scan_df.peak_id.to_numpy()
+								max_peak_id = int(max_peak_id_array[0])
+
+			
+
+
+								sorted_df_rt1 = analyte_df[analyte_df.peak_id == int(max_peak_id)]
+
+			
+								rt_array_r3.append([sorted_df_rt1[sorted_df_rt1["experiment_analyte_id"] == analyte_id]["rt"].to_numpy(),
+							                     sorted_df_rt1[sorted_df_rt1["experiment_analyte_id"] == analyte_id]["intensity"].to_numpy()])
+								analyte_rt_array_r3.append(analyte_id)
+							else:
+								pass
+
+
+					analyte_mz_array_r3 = [0 if str(i) == 'nan' else i for i in analyte_mz_array_r3]
+
+					analyte_rt_array_r3 = [0 if str(i) == 'nan' else i for i in analyte_rt_array_r3]
+
+					analyte_mz_array_r3 = [0 if str(i) == 'None' else i for i in analyte_mz_array_r3]
+
+					analyte_rt_array_r3 = [0 if str(i) == 'None' else i for i in analyte_rt_array_r3]
+
+					analyte_colour_mz_array_r3 = [0]*len(analyte_mz_array_r3)
+					analyte_colour_rt_array_r3 = [0]*len(analyte_rt_array_r3)
+
+					i = 0
+					while i < len(analyte_mz_array_r3):
+						analyte_colour_mz_array_r3[i] = int((analyte_mz_array_r3[i] + 1) % 299)
+						i+=1
+
+
+					i = 0
+					while i < len(analyte_rt_array_r3):
+
+						analyte_colour_rt_array_r3[i] = int((analyte_rt_array_r3[i] + 1) % 299)
+						i+=1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4873,6 +5053,68 @@ class Window (QDialog):
 					sorted_df_rt_r3 = total_rt_df_r3.sort_values(by=['rt'])
 
 					#sorted_df_rt = total_df.sort_values(by=['rt'])
+
+
+				if chooseAnalyte== "Experiment Analyte ID":
+					if NullState == True:
+						total_df = total_df.dropna(subset=['experiment_analyte_id'])
+						total_df=total_df[total_df.experiment_analyte_id != None]
+					else:
+						pass
+					if BlankState == True:
+						total_df=total_df[total_df.blank_analyte != True]
+					else:
+						pass
+					total_df_r1=total_df[total_df.replicate != 2]
+					total_df_r1=total_df_r1[total_df_r1.replicate != 3]
+
+					total_mz_df_r1 = total_df_r1[total_df_r1.rt > float(state.return_rtMin_state())]
+					total_mz_df_r1 = total_mz_df_r1[total_mz_df_r1.rt < float(state.return_rtMax_state())]
+
+
+
+					sorted_df_mz_r1 = total_mz_df_r1.sort_values(by=['mz'])
+
+
+					total_rt_df_r1 = total_df_r1[total_df_r1.mz > float(state.return_massMin_state())]
+
+					total_rt_df_r1 = total_rt_df_r1[total_rt_df_r1.mz < float(state.return_massMax_state())]
+					sorted_df_rt_r1 = total_rt_df_r1.sort_values(by=['rt'])
+
+					total_df_r2=total_df[total_df.replicate != 1]
+					total_df_r2=total_df_r2[total_df_r2.replicate != 3]
+
+					total_mz_df_r2 = total_df_r2[total_df_r2.rt > float(state.return_rtMin_state())]
+					total_mz_df_r2 = total_mz_df_r2[total_mz_df_r2.rt < float(state.return_rtMax_state())]
+
+
+
+					sorted_df_mz_r2 = total_mz_df_r2.sort_values(by=['mz'])
+
+
+					total_rt_df_r2 = total_df_r2[total_df_r2.mz > float(state.return_massMin_state())]
+
+					total_rt_df_r2 = total_rt_df_r2[total_rt_df_r2.mz < float(state.return_massMax_state())]
+					sorted_df_rt_r2 = total_rt_df_r2.sort_values(by=['rt'])
+
+
+
+
+					total_df_r3=total_df[total_df.replicate != 1]
+					total_df_r3=total_df_r3[total_df_r3.replicate != 2]
+
+					total_mz_df_r3 = total_df_r3[total_df_r3.rt > float(state.return_rtMin_state())]
+					total_mz_df_r3 = total_mz_df_r3[total_mz_df_r3.rt < float(state.return_rtMax_state())]
+
+
+
+					sorted_df_mz_r3 = total_mz_df_r3.sort_values(by=['mz'])
+
+
+					total_rt_df_r3 = total_df_r3[total_df_r3.mz > float(state.return_massMin_state())]
+
+					total_rt_df_r3 = total_rt_df_r3[total_rt_df_r3.mz < float(state.return_massMax_state())]
+					sorted_df_rt_r3 = total_rt_df_r3.sort_values(by=['rt'])
 			else:
 				sorted_df_mz_r1 = []
 				sorted_df_mz_r2 = []
@@ -5439,27 +5681,116 @@ class Window (QDialog):
 			self.Toggle_rt.setText('Toggle Scatter Plot')
 
 	def mMinLimit(self, text):
-		print(self.mMaxBox.text())
+
+		print('minlimit',text)
+
+
+
+
 		maxvalue=float(self.mMaxBox.text())
-		self.mz_plot.setXRange(min=float(text),max=maxvalue)
-		self.mz_r1_plot.setXRange(min=float(text),max=maxvalue)
-		self.mz_r2_plot.setXRange(min=float(text),max=maxvalue)
-		self.mz_r3_plot.setXRange(min=float(text),max=maxvalue)
+		if ',' in text:
+			text = 0.0
+			self.mMinBox.setStyleSheet("background:rgb(255,0,0);")
+		else:
+			self.mMinBox.setStyleSheet("background:rgb(255,255,255);")
+		if text == "":
+			text = 0.0
+			self.mMinBox.setText('0')
+			if maxvalue == "":
+				maxvalue = 10.0
+
+		if maxvalue == "":
+			maxvalue = 10.0
+			if text == "":
+				text = 0.0
+				self.mMinBox.setText('0')
+
+		print('mMinLimit',text)
+		print('MaxValue',maxvalue)
+		self.mz_plot.setXRange(min=float(text),max=float(maxvalue))
+		self.mz_r1_plot.setXRange(min=float(text),max=float(maxvalue))
+		self.mz_r2_plot.setXRange(min=float(text),max=float(maxvalue))
+		self.mz_r3_plot.setXRange(min=float(text),max=float(maxvalue))
 
 	def mMaxLimit(self, text):
-		print(self.mMinBox.text())
+
+		print('maxlimit',text)
+
+
 		minvalue=float(self.mMinBox.text())
-		self.mz_plot.setXRange(min=minvalue,max=float(text))
-		self.mz_r1_plot.setXRange(min=minvalue,max=float(text))
-		self.mz_r2_plot.setXRange(min=minvalue,max=float(text))
-		self.mz_r3_plot.setXRange(min=minvalue,max=float(text))
+		if ',' in text:
+			text = 0.0
+			self.mMaxBox.setStyleSheet("background:rgb(255,0,0);")
+		else:
+			self.mMaxBox.setStyleSheet("background:rgb(255,255,255);")
+
+		print(minvalue)
+
+		if text == "":
+			text = 0
+			self.mMaxBox.setText('0')
+			if minvalue == "":
+				minvalue = 0.0
+
+
+		if minvalue == "":
+			minvalue = 0.0
+			if text == "":
+				text = 0
+				self.mMaxBox.setText('0')
+
+
+		print('mMaxLimit',text)
+		print('Min Value',minvalue)
+		self.mz_plot.setXRange(min=float(minvalue),max=float(text))
+		self.mz_r1_plot.setXRange(min=float(minvalue),max=float(text))
+		self.mz_r2_plot.setXRange(min=float(minvalue),max=float(text))
+		self.mz_r3_plot.setXRange(min=float(minvalue),max=float(text))
 
 
 
 
 	def rtMinLimit(self, text):
-		print(self.rtMaxBox.text())
+
+		print('minlimit',text)
+
+
+
+
 		maxvalue=float(self.rtMaxBox.text())
+		if ',' in text:
+			text = 0.0
+			self.rtMinBox.setStyleSheet("background:rgb(255,0,0);")
+		else:
+			self.rtMinBox.setStyleSheet("background:rgb(255,255,255);")
+		if text == "":
+			text = 0.0
+		if text == "":
+			text = 0.0
+			self.rtMinBox.setText('0')
+			if maxvalue == "":
+				maxvalue = 10.0
+
+		if maxvalue == "":
+			maxvalue = 10.0
+			if text == "":
+				text = 0.0
+				self.rtMinBox.setText('0')
+
+		print('mMinLimit',text)
+		print('MaxValue',maxvalue)
+
+
+
+
+		# if text == "":
+		# 	text = 0
+
+ 
+		# print(self.rtMaxBox.text())
+		# maxvalue=float(self.rtMaxBox.text())
+		# if maxvalue == "":
+		# 	maxvalue = 0
 		self.rt_plot.setXRange(min=float(text),max=maxvalue)
 		self.rt_r1_plot.setXRange(min=float(text),max=maxvalue)
 		self.rt_r2_plot.setXRange(min=float(text),max=maxvalue)
@@ -5467,8 +5798,45 @@ class Window (QDialog):
 
 
 	def rtMaxLimit(self, text):
-		print(self.rtMinBox.text())
+
+		print('maxlimit',text)
+
+
 		minvalue=float(self.rtMinBox.text())
+		if ',' in text:
+
+			text = 0.0
+			self.rtMaxBox.setStyleSheet("background:rgb(255,0,0);")
+		else:
+			self.rtMaxBox.setStyleSheet("background:rgb(255,255,255);")
+
+		print(minvalue)
+
+		if text == "":
+			text = 10.0
+			self.rtMaxBox.setText('0')
+			if minvalue == "":
+				minvalue = 0.0
+
+
+		if minvalue == "":
+			minvalue = 0.0
+			if text == "":
+				text = 10.0
+				self.rtMaxBox.setText('0')
+
+
+		print('mMaxLimit',text)
+		print('Min Value',minvalue)
+
+
+		# if text == "":
+		# 	text = 0
+		# print(self.rtMinBox.text())
+		# minvalue=float(self.rtMinBox.text())
+
+		# if minvalue == "":
+		# 	minvalue = 0
 		self.rt_plot.setXRange(min=minvalue,max=float(text))
 		self.rt_r1_plot.setXRange(min=minvalue,max=float(text))
 		self.rt_r2_plot.setXRange(min=minvalue,max=float(text))

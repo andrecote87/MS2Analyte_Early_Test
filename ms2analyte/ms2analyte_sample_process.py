@@ -124,7 +124,7 @@ def run_analysis(input_structure):
 
     tableau.experiment_analyte_overview_export(input_structure, "Samples", sample_list)
 
-    # spectral_matching.similarity_network_graph(input_structure)
+    spectral_matching.similarity_network_graph(input_structure)
 
 
 if __name__ == "__main__":

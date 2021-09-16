@@ -50,6 +50,8 @@ class Ui_MainWindow(QObject):
         self.ReplicatesCheckBox.setChecked(True)
         self.ReplicatesCheckBox.setObjectName("ReplicatesCheckBox")
         self.verticalLayout_2.addWidget(self.ReplicatesCheckBox)
+
+
         self.horizontalLayout_6 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_6.setObjectName("horizontalLayout_6")
         self.ReplicateCountLabel = QtWidgets.QLabel(self.layoutWidget1)
@@ -61,6 +63,7 @@ class Ui_MainWindow(QObject):
         self.ReplicateCountLineEdit.setObjectName("ReplicateCountLineEdit")
         self.horizontalLayout_6.addWidget(self.ReplicateCountLineEdit)
         self.verticalLayout_2.addLayout(self.horizontalLayout_6)
+
         self.StandardsCheckBox = QtWidgets.QCheckBox(self.layoutWidget1)
         self.StandardsCheckBox.setEnabled(False)
         self.StandardsCheckBox.setObjectName("StandardsCheckBox")
@@ -86,6 +89,20 @@ class Ui_MainWindow(QObject):
         self.IonMobilityCheckBox.setChecked(True)
         self.IonMobilityCheckBox.setObjectName("IonMobilityCheckBox")
         self.verticalLayout_2.addWidget(self.IonMobilityCheckBox)
+
+
+        self.horizontalLayout_11 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_11.setObjectName("horizontalLayout_11")
+        self.ThresholdLabel = QtWidgets.QLabel(self.layoutWidget1)
+        self.ThresholdLabel.setEnabled(True)
+        self.ThresholdLabel.setObjectName("ThresholdLabel")
+        self.horizontalLayout_11.addWidget(self.ThresholdLabel)
+        self.ThresholdLineEdit = QtWidgets.QLineEdit(self.layoutWidget1)
+        self.ThresholdLineEdit.setEnabled(True)
+        self.ThresholdLineEdit.setObjectName("ThresholdLineEdit")
+        self.horizontalLayout_11.addWidget( self.ThresholdLineEdit)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_11)
+
         self.horizontalLayout_10.addWidget(self.frame_2)
         self.frame = QtWidgets.QFrame(self.layoutWidget)
         self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
@@ -326,8 +343,10 @@ class Ui_MainWindow(QObject):
         self.MS2CheckBox.stateChanged['int'].connect(self.ms2_check_changed)
         self.ManufacturerComboBox.activated['QString'].connect(self.manufacturer_dropdown_changed)
         self.SubmitPushButton.clicked.connect(self.submit_slot)
+        self.SubmitPushButton.clicked.connect(self.threshold_value)
         self.BlanksCheckBox.stateChanged['int'].connect(self.blanks_check_changed)
         self.ReplicateCountLineEdit.textChanged['QString'].connect(self.replicate_count_changed)
+        self.ThresholdLineEdit.textChanged['QString'].connect(self.threshold_value)
         self.DDARadioButton.clicked['bool'].connect(self.ms2_method_changed)
         self.IonMobilityCheckBox.stateChanged['int'].connect(self.ion_mobility_check_changed)
         self.InstrumentComboBox.currentTextChanged['QString'].connect(self.instrument_dropdown_changed)
@@ -342,6 +361,7 @@ class Ui_MainWindow(QObject):
         self.BlanksCheckBox.setText(_translate("MainWindow", "Blanks"))
         self.ReplicatesCheckBox.setText(_translate("MainWindow", "Replicates"))
         self.ReplicateCountLabel.setText(_translate("MainWindow", "Replicate count"))
+        self.ThresholdLabel.setText(_translate("MainWindow", "Threshold"))
         self.ReplicateCountLineEdit.setText(_translate("MainWindow", "3"))
         self.StandardsCheckBox.setText(_translate("MainWindow", "Standards"))
         self.MS2CheckBox.setText(_translate("MainWindow", "MS2 data"))
