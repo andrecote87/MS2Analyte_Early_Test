@@ -99,7 +99,7 @@ def calculate_slope(row_data, peak_df):
 
 def peak_to_analyte_vectorized(peak_list, input_df):
 
-    analyte_id = 1
+    analyte_id = int(1)
     completed_peaks = []
 
     for peak in peak_list:
@@ -118,6 +118,14 @@ def peak_to_analyte_vectorized(peak_list, input_df):
                 matched_peaks = slope_match[slope_match].index.values
                 completed_peaks = completed_peaks + matched_peaks.tolist()
                 input_df.loc[input_df["peak_id"].isin(matched_peaks), "analyte_id"] = int(analyte_id)
+
+            # Remove analyte ids from analytes that do not meet the peak minimum threshold.
+            # Mark peaks as assigned so that they are not re-examined in future analyte creation steps
+            # (eliminates redundant anayses and speeds up analyte creation)
+            # To remove this filter, set analyte_peak_minimum to 1 in config
+            if len(input_df[input_df["analyte_id"] == analyte_id]["peak_id"].unique().tolist()) < config.analyte_peak_minimum:
+                input_df["analyte_id"].replace({analyte_id: None}, inplace=True)
+            else:
                 analyte_id += 1
 
     print("Total number of peaks = " + str(len(peak_list)))

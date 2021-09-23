@@ -106,7 +106,6 @@ def run_analysis(input_structure):
             replicate_compare.sample_consensus_analytes_no_replicates(input_structure, "Blanks", "ms1")
 
         replicate_compare.analyte_update_replicate_analyte_data(input_structure, "Blanks", blank_list)
-
         basket.sample_set_basket(input_structure, "Blanks", blank_list)
         experiment_analyte_sample_list = basket.experiment_analyte_sample_analyte_dict(input_structure, "Blanks")
         basket.create_experiment_analyte_spectra(input_structure, "Blanks", blank_list, experiment_analyte_sample_list)
@@ -123,7 +122,6 @@ def run_analysis(input_structure):
         blank_annotate.analyte_blank_annotate(input_structure, sample_list)
 
     tableau.experiment_analyte_overview_export(input_structure, "Samples", sample_list)
-
     spectral_matching.similarity_network_graph(input_structure)
 
 

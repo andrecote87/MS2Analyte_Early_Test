@@ -61,7 +61,7 @@ def mzml(file_path):
             print("Completed import of scan " + str(scan_number))
 
         if spec.ms_level == 1:
-            retention_time = round(spec.scan_time_in_minutes(), 2)
+            retention_time = round(spec.scan_time_in_minutes(), 4)
             drift_time = None
             for peak in spec.peaks('reprofiled'):
                 print(peak)

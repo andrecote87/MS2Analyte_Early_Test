@@ -40,7 +40,7 @@ from threading import *
 from PyQt5.QtWidgets import *
 from ms2analyte.file_open_dialogue import MainWindowUIClass
 from PyQt5 import uic
-
+from PyQt5.QtWidgets import QMessageBox
 
 
 global open_state
@@ -898,8 +898,14 @@ class Window (QDialog):
 		self.setWindowFlags(self.windowFlags() |
 			QtCore.Qt.WindowMaximizeButtonHint |
 			QtCore.Qt.WindowSystemMenuHint)
-		self.show()
 
+
+
+		self.show()
+		start_message = QMessageBox()
+		start_message.setWindowTitle("MS2Analyte")
+		start_message.setText('Welcome to MS2Analyte. To get started, run a new analysis or open an existing output folder')
+		x = start_message.exec_()
 	def sample_export(self):
 		state = State(self.Nullbutton.isChecked(), self.Blankbutton.isChecked(), self.mMinBox.text(), self.mMaxBox.text(), self.rtMinBox.text(), self.rtMaxBox.text(),self.Toggle_rt.isChecked())
 
@@ -1508,7 +1514,7 @@ class Window (QDialog):
 		self.mz_plot.setLabel(axis='left',text='Intensity',**{ 'font-size': '10pt'})
 		self.mz_plot.setMouseEnabled(x=True, y=False)
 		self.mz_plot.setStyleSheet("background-color: white;  border:1px solid black")
-
+		self.mz_plot.setTitle("No Data Loaded")
 
 
 
@@ -1519,6 +1525,9 @@ class Window (QDialog):
 		self.rt_plot.setLabel(axis='left',text='Intensity',**{ 'font-size': '10pt'})
 		
 		self.rt_plot.setMouseEnabled(x=True, y=False)
+
+
+		self.rt_plot.setTitle("No Data Loaded")
 		self.ms1_plot = pg.PlotWidget()
 		self.ms1_plot.setStyleSheet("background-color: white; margin:0.001px; border:1px solid black; ")
 		self.ms1_plot.setLabel(axis='bottom',text='m/z',**{ 'font-size': '10pt'})
@@ -1574,6 +1583,17 @@ class Window (QDialog):
 		self.rt_r3_plot.setLabel(axis='left',text='Intensity')
 		self.rt_r3_plot.setStyleSheet("background-color: white; margin:0.001px; border:1px solid black; ")
 		self.rt_r3_plot.setMouseEnabled(x=True, y=False)
+
+
+
+		# self.No_Data_Label1 = QLabel('No Data Loaded')
+		# self.No_Data_Label2 = QLabel('No Data Loaded')
+		# self.No_Data_Label3 = QLabel('No Data Loaded')
+		# self.No_Data_Label4 = QLabel('No Data Loaded')
+		# self.No_Data_Label5 = QLabel('No Data Loaded')
+		# self.No_Data_Label6 = QLabel('No Data Loaded')
+		# self.No_Data_Label7 = QLabel('No Data Loaded')
+		# self.No_Data_Label8 = QLabel('No Data Loaded')
 
 
 
@@ -1641,7 +1661,14 @@ class Window (QDialog):
 		layoutRegion3.addWidget(self.rt_r2_plot,5,1)
 		layoutRegion3.addWidget(self.rt_r3_plot,6,1)
 
-
+		# layoutRegion3.addWidget(self.No_Data_Label1,0,1)
+		# layoutRegion3.addWidget(self.No_Data_Label2,1,1)
+		# layoutRegion3.addWidget(self.No_Data_Label3,1,1)
+		# layoutRegion3.addWidget(self.No_Data_Label4,2,1)
+		# layoutRegion3.addWidget(self.No_Data_Label5,3,1)
+		# layoutRegion3.addWidget(self.No_Data_Label6,4,1)
+		# layoutRegion3.addWidget(self.No_Data_Label7,5,1)
+		# layoutRegion3.addWidget(self.No_Data_Label8,6,1)
 
 		layoutRegion5 = QGridLayout()
 		layoutRegion5.addWidget(self.ms1_plot,0,1)
@@ -2912,11 +2939,6 @@ class Window (QDialog):
 
 
 
-
-
-
-
-
 				if chooseAnalyte == "Experiment Analyte ID":
 					print('Loading Replicate Tab')
 					for analyte_id in sorted_df_mz_r2.experiment_analyte_id.unique():
@@ -3367,28 +3389,6 @@ class Window (QDialog):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 				self.rt_r3_plot.clear()
 				self.mz_r3_plot.clear()
 				print('Loading Replicate Tab')
@@ -3520,6 +3520,217 @@ class Window (QDialog):
 
 
 							self.rt_r3_plot.plot( x=analyte[0], y=analyte[1], pen=None, symbolPen=pg.intColor(analyte_colour_rt_array_r3[colour],  values=5), symbolBrush=pg.intColor( analyte_colour_rt_array_r3[colour], values=5),symbol='o', symbolSize=3)
+							colour+=1
+
+
+
+				if chooseAnalyte == "Experiment Analyte ID":
+
+
+					for analyte_id in sorted_df_mz_r1.experiment_analyte_id.unique():
+
+						mz_array_r1.append([sorted_df_mz_r1[sorted_df_mz_r1["experiment_analyte_id"] == analyte_id]["mz"].to_numpy(),
+					                     sorted_df_mz_r1[sorted_df_mz_r1["experiment_analyte_id"] == analyte_id]["intensity"].to_numpy(),])
+
+						analyte_mz_array_r1.append(analyte_id)
+
+
+						
+
+					print('Loading Replicate Tab')
+
+					if Toggle_rt == True:
+					
+
+						for analyte_id in sorted_df_rt_r1.experiment_analyte_id.unique():
+							rt_array_r1.append([sorted_df_rt_r1[sorted_df_rt_r1["experiment_analyte_id"] == analyte_id]["rt"].to_numpy(),
+						                     sorted_df_rt_r1[sorted_df_rt_r1["experiment_analyte_id"] == analyte_id]["intensity"].to_numpy()])
+							analyte_rt_array_r1.append(analyte_id)
+					else:
+
+
+
+						for analyte_id in sorted_df_rt_r1.experiment_analyte_id.unique():
+							if analyte_id != None:
+								analyte_df = sorted_df_rt_r1[sorted_df_rt_r1.experiment_analyte_id == analyte_id]
+
+								max_scan_df = analyte_df[analyte_df.intensity == analyte_df.intensity.max()]
+
+								max_peak_id_array = max_scan_df.peak_id.to_numpy()
+								max_peak_id = int(max_peak_id_array[0])
+
+			
+
+
+								sorted_df_rt1 = analyte_df[analyte_df.peak_id == int(max_peak_id)]
+
+			
+								rt_array_r1.append([sorted_df_rt1[sorted_df_rt1["experiment_analyte_id"] == analyte_id]["rt"].to_numpy(),
+							                     sorted_df_rt1[sorted_df_rt1["experiment_analyte_id"] == analyte_id]["intensity"].to_numpy()])
+								analyte_rt_array_r1.append(analyte_id)
+							else:
+								pass
+
+
+					analyte_mz_array_r1 = [0 if str(i) == 'nan' else i for i in analyte_mz_array_r1]
+
+					analyte_rt_array_r1 = [0 if str(i) == 'nan' else i for i in analyte_rt_array_r1]
+
+					analyte_mz_array_r1 = [0 if str(i) == 'None' else i for i in analyte_mz_array_r1]
+
+					analyte_rt_array_r1 = [0 if str(i) == 'None' else i for i in analyte_rt_array_r1]
+
+					analyte_colour_mz_array_r1 = [0]*len(analyte_mz_array_r1)
+					analyte_colour_rt_array_r1 = [0]*len(analyte_rt_array_r1)
+
+					i = 0
+					while i < len(analyte_mz_array_r1):
+						analyte_colour_mz_array_r1[i] = int((analyte_mz_array_r1[i] + 1) % 299)
+						i+=1
+
+
+					i = 0
+					while i < len(analyte_rt_array_r1):
+
+						analyte_colour_rt_array_r1[i] = int((analyte_rt_array_r1[i] + 1) % 299)
+						i+=1
+
+
+
+
+
+
+				self.rt_r1_plot.clear()
+				self.mz_r1_plot.clear()
+				print('Loading Replicate Tab')
+
+
+
+				if Toggle_rt == False:
+					if comboAnalyte != "Show All":
+						print('Loading Replicate Tab')
+						alpha=1
+
+
+						colour=0
+						for analyte in mz_array_r1:
+
+
+							#self.mz_plot.plot( x=analyte[0], y=analyte[1], pen=None, symbolPen=pg.intColor( analyte_colour_array[colour],  values=5, alpha=alpha), symbolBrush=pg.intColor( analyte_colour_array[colour],values=5,alpha=alpha),symbol='o', symbolSize=3)
+							#colour+=1
+
+							if analyte_mz_array_r1[colour] == float(comboAnalyte):
+
+
+								self.test = self.mz_r1_plot.plot( x=analyte[0], y=analyte[1], pen=None, symbolPen=pg.intColor( analyte_colour_mz_array_r1[colour],  values=5, alpha=255), symbolBrush=pg.intColor( analyte_colour_mz_array_r1[colour],values=5,alpha=255),symbol='o', symbolSize=3)
+								self.test.sigPointsClicked.connect(self.clicked)
+							else:
+								pass
+
+
+							self.test = self.mz_r1_plot.plot( x=analyte[0], y=analyte[1], pen=None, symbolPen=pg.intColor( analyte_colour_mz_array_r1[colour],  values=5, alpha=alpha), symbolBrush=pg.intColor( analyte_colour_mz_array_r1[colour],values=5,alpha=alpha),symbol='o', symbolSize=3)
+							self.test.sigPointsClicked.connect(self.clicked)
+							colour+=1
+
+						colour=0
+						for analyte in rt_array_r1:
+
+
+							if analyte_rt_array_r1[colour] == float(comboAnalyte):
+
+
+								self.rt_r1_plot.plot( x=analyte[0], y=analyte[1], fillLevel=-0.3, pen=pg.intColor(analyte_colour_rt_array_r1[colour],  values=5, alpha=255),brush=pg.intColor(analyte_colour_rt_array_r1[colour], alpha=50))
+								
+
+							else:
+								pass
+
+							self.rt_r1_plot.plot( x=analyte[0], y=analyte[1], fillLevel=-0.3, pen=pg.intColor(analyte_colour_rt_array_r1[colour],  values=5, alpha=alpha),brush=pg.intColor(analyte_colour_rt_array_r1[colour], alpha=alpha))
+							colour+=1
+
+
+
+					else:
+						alpha=255
+						colour=0
+						for analyte in mz_array_r1:
+
+
+							self.test = self.mz_r1_plot.plot( title="test", x=analyte[0], y=analyte[1], pen=None, symbolPen=pg.intColor( analyte_colour_mz_array_r1[colour],  values=5), symbolBrush=pg.intColor( analyte_colour_mz_array_r1[colour],values=5),symbol='o', symbolSize=3)
+							#test.setAlpha(0, False)
+							self.test.sigPointsClicked.connect(self.clicked)
+							colour+=1
+						colour=0
+						for analyte in rt_array_r1:
+
+
+
+
+
+							self.rt_r1_plot.plot( x=analyte[0], y=analyte[1], fillLevel=-0.3, pen=pg.intColor(analyte_colour_rt_array_r1[colour],  values=5),brush=pg.intColor(analyte_colour_rt_array_r1[colour], alpha=50))
+							colour+=1
+				else:
+					if comboAnalyte != "Show All":
+							print('Loading Replicate Tab')
+							alpha=1
+
+
+							colour=0
+							for analyte in mz_array_r1:
+
+
+								#self.mz_plot.plot( x=analyte[0], y=analyte[1], pen=None, symbolPen=pg.intColor( analyte_colour_array[colour],  values=5, alpha=alpha), symbolBrush=pg.intColor( analyte_colour_array[colour],values=5,alpha=alpha),symbol='o', symbolSize=3)
+								#colour+=1
+
+								if analyte_mz_array_r1[colour] == float(comboAnalyte):
+
+
+									self.test = self.mz_r1_plot.plot( x=analyte[0], y=analyte[1], pen=None, symbolPen=pg.intColor( analyte_colour_mz_array_r1[colour],  values=5, alpha=255), symbolBrush=pg.intColor( analyte_colour_mz_array_r1[colour],values=5,alpha=255),symbol='o', symbolSize=3)
+									self.test.sigPointsClicked.connect(self.clicked)
+								else:
+									pass
+
+
+								self.test = self.mz_r1_plot.plot( x=analyte[0], y=analyte[1], pen=None, symbolPen=pg.intColor( analyte_colour_mz_array_r1[colour],  values=5, alpha=alpha), symbolBrush=pg.intColor( analyte_colour_mz_array_r1[colour],values=5,alpha=alpha),symbol='o', symbolSize=3)
+								self.test.sigPointsClicked.connect(self.clicked)
+								colour+=1
+
+							colour=0
+							for analyte in rt_array_r1:
+
+
+								if analyte_rt_array_r1[colour] == float(comboAnalyte):
+
+
+									self.rt_r1_plot.plot( x=analyte[0], y=analyte[1], pen=None, symbolPen=pg.intColor(analyte_colour_rt_array_r1[colour],  values=5, alpha=255), symbolBrush=pg.intColor( analyte_colour_rt_array_r1[colour], values=5, alpha=255),symbol='o', symbolSize=3)
+									
+
+								else:
+									pass
+
+								self.rt_r1_plot.plot( x=analyte[0], y=analyte[1], pen=None, symbolPen=pg.intColor(analyte_colour_rt_array_r1[colour],  values=5, alpha=alpha), symbolBrush=pg.intColor( analyte_colour_rt_array_r1[colour], values=5, alpha=alpha),symbol='o', symbolSize=3)
+								colour+=1
+
+
+
+					else:
+						alpha=255
+						colour=0
+						for analyte in mz_array_r1:
+
+
+							self.test = self.mz_r1_plot.plot( title="test", x=analyte[0], y=analyte[1], pen=None, symbolPen=pg.intColor( analyte_colour_mz_array_r1[colour],  values=5), symbolBrush=pg.intColor( analyte_colour_mz_array_r1[colour],values=5),symbol='o', symbolSize=3)
+							#test.setAlpha(0, False)
+							self.test.sigPointsClicked.connect(self.clicked)
+							colour+=1
+						colour=0
+						for analyte in rt_array_r1:
+
+
+
+
+
+							self.rt_r1_plot.plot( x=analyte[0], y=analyte[1], pen=None, symbolPen=pg.intColor(analyte_colour_rt_array_r1[colour],  values=5), symbolBrush=pg.intColor( analyte_colour_rt_array_r1[colour], values=5),symbol='o', symbolSize=3)
 							colour+=1
 				#analyte_array[0] = 0
 				#print(analyte_array)
@@ -5395,8 +5606,24 @@ class Window (QDialog):
 		else:
 
 			open_state = 1
+		# with open((os.path.join(output_path, experiment_name + "_experiment_import_parameters.pickle")), 'rb') as f:
+		# 	experiment_info = pickle.load(f)
+		# if experiment_info.ms2_type == 'DDA':
+		# 	self.mgf_action.setDisabled(True)
 
+		# 	self.export_mgf.setDisabled(True)
 
+		# else:
+		# 	self.mgf_action.setDisabled(False)
+		# 	self.export_mgf.setDisabled(False)
+
+		print(input_structure.blanks_exist)
+		if input_structure.blanks_exist == False:
+
+			self.Blankbutton.setDisabled(True)
+
+		else:
+			self.Blankbutton.setDisabled(False)
 
 	def info_test(self):
 
@@ -5505,73 +5732,208 @@ class Window (QDialog):
 	def ms1_DF_Export(self):
 
 
-
-		comboText=self.comboBox.currentText()
-
-		df1, df2, df3 = import_ms1_dataframe(input_structure, input_type, comboText)
-		df1 = df1[df1.relative_intensity != 0]
+		if open_state == 2:
 
 
-		ms2 = import_ms2_dataframe(input_structure, input_type, comboText)
-		ms2 = ms2[ms2.relative_intensity != 0]
+			with open((os.path.join(output_path, experiment_name + "_experiment_import_parameters.pickle")), 'rb') as f:
+				experiment_info = pickle.load(f)
 
+			if experiment_info.ms2_type == 'DIA':
 
+				print(self.comboBox.currentText())
+				comboText=self.comboBox.currentText()
+				print(comboText)
 
-		ms2_data = []
-		ms1_data = []
+				df1, df2, df3 = import_ms1_dataframe(output_path, input_type, comboText)
 
-		analyte_list = []
-
-		count = 0
-		for analyte_id in df1.replicate_analyte_id.unique():
-			ms1_data.append([df1[df1["replicate_analyte_id"] == analyte_id]["relative_intensity"].to_numpy(),
-							 df1[df1["replicate_analyte_id"] == analyte_id]["average_mass"].to_numpy()])
-			count +=1
-
-		for analyte_id in ms2.replicate_analyte_id.unique():
-			ms2_data.append([df1[df1["replicate_analyte_id"] == analyte_id]["relative_intensity"].to_numpy(),
-							 df1[df1["replicate_analyte_id"] == analyte_id]["average_mass"].to_numpy()])
-			analyte_list.append(analyte_id)
-			count +=1
+				df1 = df1[df1.relative_intensity != 0]
 
 
 
-		max_intensity = []
-		for analyte in ms1_data:
-			res = [x for x in range(len(analyte[0])) if analyte[0][x] == max(analyte[0])] 
-			max_intensity.append(max(analyte[1][res]))
+				ms2 = import_ms2_dataframe(output_path, input_type, comboText)
+
+				ms2 = ms2[ms2.relative_intensity != 0]
 
 
-		
-		filename, _ = QFileDialog.getSaveFileName(self, "Save", os.getcwd()+os.sep+ 'ms_data', "ZIP Files (*.zip)")
 
 
-		if filename:
-			zipObj = ZipFile(filename, 'w')
-			i = 0
-			for analyte in ms2_data:
+				ms2_data = []
+				ms1_data = []
 
-				spectrum = Spectrum(mz=analyte[1],
-									intensities=analyte[0],
-									metadata={"Analyte": analyte_list[i],
-											"charge": +1,
-											"precursor_mz": max_intensity[i]})
+				analyte_list = []
+
+				count = 0
+				for analyte_id in df1.replicate_analyte_id.unique():
+					ms1_data.append([df1[df1["replicate_analyte_id"] == analyte_id]["relative_intensity"].to_numpy(),
+									 df1[df1["replicate_analyte_id"] == analyte_id]["average_mass"].to_numpy()])
+					count +=1
+
+				for analyte_id in ms2.replicate_analyte_id.unique():
+					ms2_data.append([df1[df1["replicate_analyte_id"] == analyte_id]["relative_intensity"].to_numpy(),
+									 df1[df1["replicate_analyte_id"] == analyte_id]["average_mass"].to_numpy()])
+					analyte_list.append(analyte_id)
+					count +=1
+
+
+
+				max_intensity = []
+				for analyte in ms1_data:
+					res = [x for x in range(len(analyte[0])) if analyte[0][x] == max(analyte[0])] 
+					max_intensity.append(max(analyte[1][res]))
+
 
 				
-
-				save_as_mgf(spectrum,'analyte_'+ str(analyte_list[i]) + '.mgf')
-				zipObj.write('analyte_'+ str(analyte_list[i]) + '.mgf')
-				os.remove('analyte_'+ str(analyte_list[i]) + '.mgf')
-				i+=1
-			
-			# if not filename: return 0
-			# if filename:
+				filename, _ = QFileDialog.getSaveFileName(self, "Save", os.getcwd()+os.sep+ 'ms_data', "ZIP Files (*.zip)")
 
 
-			zipObj.close()
+				if filename:
+					zipObj = ZipFile(filename, 'w')
+					i = 0
+					for analyte in ms2_data:
+
+						spectrum = Spectrum(mz=analyte[1],
+											intensities=analyte[0],
+											metadata={"Analyte": analyte_list[i],
+													"charge": +1,
+													"precursor_mz": max_intensity[i]})
+
+						
+
+						save_as_mgf(spectrum,'analyte_'+ str(analyte_list[i]) + '.mgf')
+						zipObj.write('analyte_'+ str(analyte_list[i]) + '.mgf')
+						os.remove('analyte_'+ str(analyte_list[i]) + '.mgf')
+						i+=1
+					
+					# if not filename: return 0
+					# if filename:
+
+
+					zipObj.close()
 
 				
+			if experiment_info.ms2_type == 'DDA':
+				print('test1 ms1 export')
+				print(self.comboBox.currentText())
+				comboText=self.comboBox.currentText()
+				print(comboText)
+				print('test2')
+				df1, df2, df3 = import_ms1_dataframe(output_path, input_type, comboText)
+				print('test3')
+				df1 = df1[df1.relative_intensity != 0]
+				print('test4')
+
+
+				ms2 = import_ms2_dataframe(output_path, input_type, comboText)
+				print('test5')
+				ms2 = ms2[ms2.Intensity != 0]
+				print('test6')
+
+
+				print(df1)
+				print(ms2)
+				ms2_data = []
+				ms1_data = []
+				ms1_average_mass = []
+				ms2_average_mass = []
+				analyte_list = []
 				
+				count = 0
+				for analyte_id in df1.replicate_analyte_id.unique():
+					ms1_data.append([df1[df1["replicate_analyte_id"] == analyte_id]["relative_intensity"].to_numpy(),
+									 df1[df1["replicate_analyte_id"] == analyte_id]["average_mass"].to_numpy()])
+					count +=1
+				print(ms1_data)
+				for analyte_id in ms2.analyte_id.unique():
+					ms2_data.append([ms2[ms2["analyte_id"] == analyte_id]["analyte_id"].to_numpy(),
+									 ms2[ms2["analyte_id"] == analyte_id]["Intensity"].to_numpy(),
+									 ms2[ms2["analyte_id"] == analyte_id]["ms2_data"].to_numpy(),
+									 ms2[ms2["analyte_id"] == analyte_id]["ms1_average_mass"].to_numpy()])
+					analyte_list.append(analyte_id)
+					ms1_average_mass.append([ms2[ms2["analyte_id"] == analyte_id]["ms1_average_mass"].to_numpy()])
+					ms2_average_mass.append([ms2[ms2["analyte_id"] == analyte_id]["ms2_data"].to_numpy()])
+					count +=1
+
+
+				# for mass in ms2.ms1_average_mass.unique():
+				# 	ms2_data.append([ms2[ms2["ms1_average_mass"] == mass]["analyte_id"].to_numpy(),
+				# 					 ms2[ms2["ms1_average_mass"] == mass]["Intensity"].to_numpy(),
+				# 					 ms2[ms2["ms1_average_mass"] == mass]["ms2_data"].to_numpy()])
+				# 	ms1_mass_list.append(mass)
+				# 	ms1_average_mass.append([ms2[ms2["analyte_id"] == analyte_id]["ms1_average_mass"].to_numpy()])
+				# 	ms2_average_mass.append([ms2[ms2["analyte_id"] == analyte_id]["ms2_data"].to_numpy()])
+				# 	count +=1
+
+
+				max_intensity = []
+				for analyte in ms1_data:
+					res = [x for x in range(len(analyte[0])) if analyte[0][x] == max(analyte[0])] 
+					max_intensity.append(max(analyte[1][res]))
+
+
+				
+				filename, _ = QFileDialog.getSaveFileName(self, "Save", os.getcwd()+os.sep+ 'ms_data', "ZIP Files (*.zip)")
+
+
+				if filename:
+					zipObj = ZipFile(filename, 'w')
+					i = 0
+					for analyte in ms2_data:
+
+						spectrums  = []
+
+
+						ms2_data_2 = []
+						ms1_mass_list = []
+						ms2_df_2 = ms2[ms2.analyte_id == analyte_list[i]]
+						ms2_df_2 = ms2_df_2.sort_values(by=['ms2_data'])
+						for mass in ms2_df_2.ms1_average_mass.unique():
+							ms2_data_2.append([ms2_df_2[ms2_df_2["ms1_average_mass"] == mass]["ms2_data"].to_numpy(),
+											   ms2_df_2[ms2_df_2["ms1_average_mass"] == mass]["Intensity"].to_numpy()])
+
+							ms1_mass_list.append(mass)
+
+						print('ms1_mass_list', ms1_mass_list)
+						print('ms2_data_2', ms2_data_2)
+						print('MS2 DF 2',ms2_df_2)
+						j=0
+						for mass in ms2_data_2:
+							print('i',i)
+							print('j',j)
+							print('analyte', analyte_list[i])
+							print('ms1_mass', ms1_mass_list[j])
+							print(mass)
+							print(mass[0])
+							ms2_mass = mass[0]
+							ms2_intensity = mass[1]
+							print(ms2_mass)
+							print(mass[1])
+
+							# spectrum = Spectrum(mz=numpy.array(mass[0],dtype="float"),
+							# 					intensities=numpy.array(mass[1],dtype="float"),
+							# 					metadata={"Analyte": analyte_list[i],
+							# 							"charge": +1,
+							# 							"precursor_mz": ms1_mass_list[j]})
+							spectrum = Spectrum(mz=numpy.array(ms2_mass, dtype="float"),
+												intensities=numpy.array(ms2_intensity, dtype="float"),
+												metadata={"Analyte": analyte_list[i],
+														"charge": +1,
+														"precursor_mz": ms1_mass_list[j]})
+
+							print('test')
+
+							spectrums.append(spectrum)
+							j+=1
+						save_as_mgf(spectrums,'analyte_'+ str(analyte_list[i]) + '.mgf')
+						zipObj.write('analyte_'+ str(analyte_list[i]) + '.mgf')
+						os.remove('analyte_'+ str(analyte_list[i]) + '.mgf')
+							
+						i+=1
+					
+					# if not filename: return 0
+					# if filename:
+
+
+					zipObj.close()
 
 
 

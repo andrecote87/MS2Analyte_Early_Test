@@ -517,12 +517,10 @@ def strip_flat_peaks(input_data):
             # because there are not enough points to calculate slope.
             temp_data['slope'] = temp_data['pcent_int_diff'].rolling(window=5, center=True).apply(flat_peak_slope, raw=False)
             temp_data['high_slope'] = temp_data['slope'].rolling(window=3, center=True).apply(assign_high_slope, raw=False)
-            # Backfill high slope values for first and last three points by assuming same value as third (or -3) data
-            # point
-            for i in range(3):
-                temp_data["high_slope"].iloc[i] = 1
-            for j in range(-1, -4, -1):
-                temp_data["high_slope"].iloc[j] = 1
+            # Set first and last three points as high slope. If they adjoin a high slope region they will be retained.
+            # If they adjoin a low slope region they will get peak split, and as they are a small peak (3 data points)
+            # this peak will typically be removed by the 'remove_no_slope' function.
+            temp_data['high_slope'] = temp_data['high_slope'].fillna(1)
             # Set high intensity peaks as 'high slope' regardless of actual slope so they are not removed
             if len(temp_data.index) < 200 \
                     and len(temp_data[temp_data.high_slope == 1]) > 0 \

@@ -3,8 +3,7 @@
 """
 file open dialogue window for MS2Analyte
 """
-import fileinput
-import os
+
 import sys
 import time
 
@@ -14,10 +13,6 @@ from ms2analyte.Qt_Designer_templates.File_Dialogue.mainwindow_v2 import Ui_Main
 from ms2analyte.visualizations.file_open_model import PathManager, ExperimentParameters, InstrumentParameters, \
     ValidateSubmit
 from ms2analyte.ms2analyte_sample_process import run_analysis
-
-
-
-
 
 
 class MainWindowUIClass(Ui_MainWindow):
@@ -271,12 +266,11 @@ class MainWindowUIClass(Ui_MainWindow):
                                                                     self.instrument_parameters)
             run_analysis(self.input_data_structure)
             self.textBrowser.append("Analysis complete")
-
+            time.sleep(2)
+            sys.exit()
         else:
             for warning in warnings_list:
                 self.textBrowser.append(warning)
-
-
     def threshold_value(self):
 
         absolute_path = os.path.abspath(__file__)
@@ -300,10 +294,6 @@ class MainWindowUIClass(Ui_MainWindow):
             for row in all_lines:
 
                 output.write(str(row))
-
-
-
-
 
 def launch_gui():
     app = QtWidgets.QApplication(sys.argv)

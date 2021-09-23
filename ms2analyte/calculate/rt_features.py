@@ -13,7 +13,7 @@ from scipy.stats import linregress
 def find_rt(peak_data):
     """Determine retention time for a peak, given Pandas dataframe of rt and intensity"""
     max_intensity = peak_data["intensity"].max()
-    rt = round(peak_data[peak_data["intensity"] == max_intensity].iloc[0]["rt"], 3)
+    rt = round(peak_data[peak_data["intensity"] == max_intensity].iloc[0]["rt"], 4)
 
     return rt
 
@@ -33,7 +33,7 @@ def average_rt(rt_list):
 
     """
 
-    return round(sum(rt_list)/len(rt_list), 3)
+    return round(sum(rt_list)/len(rt_list), 4)
 
 
 def rt_peak_shape_match(sample_df, compare_df):

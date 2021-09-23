@@ -105,6 +105,8 @@ def find_mass_offset(analyte1, analyte2):
     # matching.
 
     unique_elements, counts_elements = np.unique(mass_difference_array, return_counts=True)
+    if len(counts_elements) == 0:
+        return None
     counts_elements_values, counts_counts_elements = np.unique(counts_elements, return_counts=True)
     counts_elements_count_dict = dict(zip(counts_elements_values, counts_counts_elements))
     unique_elements_with_count = []
@@ -125,7 +127,7 @@ def find_mass_offset(analyte1, analyte2):
                     mass_offset = unique_element[0]
                 # Otherwise, if top count is of zero, set offset to next highest count, provided it still meets the
                 # minimum peak match threshold.
-                else:
+                elif len(counts_elements) > 1:
                     max_counts = sorted(counts_elements, reverse=True)[1]
                     if max_counts >= config.minimum_mass_offset_instances:
                         count_of_max_counts = counts_elements_count_dict[max_counts]
@@ -134,6 +136,8 @@ def find_mass_offset(analyte1, analyte2):
                             mass_offset = select_closest_mass_offset(max_counts, unique_elements_with_count)
                     else:
                         break
+                else:
+                    return None
 
     return mass_offset
 

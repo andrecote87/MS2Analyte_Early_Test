@@ -74,7 +74,7 @@ __email__ = 'rliningt@sfu.ca, andre_cote@sfu.ca'
 __status__ = 'Alpha'
 
 mass_error_da = 0.01
-mass_error_ppm = 5
+mass_error_ppm = 20
 rt_error = 0.1
 intensity_cutoff = 2000
 carbon_isotope_offset = 1.0034

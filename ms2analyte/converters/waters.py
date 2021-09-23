@@ -71,7 +71,7 @@ def extract_scan_data(spec, input_structure):
     scan_data = pd.DataFrame(spec.mz, columns=["mz"])
     scan_data["intensity"] = spec.i
     scan_data["scan"] = spec.ID
-    scan_data["rt"] = round(spec.scan_time_in_minutes(), 2)
+    scan_data["rt"] = round(spec.scan_time_in_minutes(), 4)
     # NOTE: Drift time extraction not complete yet.
     if input_structure.ims_exists:
         scan_data["drift"] = spec.drift * 100

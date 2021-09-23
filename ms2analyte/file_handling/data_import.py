@@ -155,59 +155,20 @@ def input_data_structure():
     # ms_data_file_suffix = "mzML"
     # experiment_name = "HDMSe_mzML_test"
 
-    sample_directory = "C:\\Users\\Pandi\\Documents\\DIA_ms2_test\\ms2analyte-ms2_data\\Samples"
-    blank_directory = "C:\\Users\\Pandi\\Documents\\DIA_ms2_test\\ms2analyte-ms2_data\\Blanks" 
-    output_directory = "C:\\Users\\Pandi\\Documents\\DIA_ms2_test\\ms2analyte-ms2_data\\Output"
-
-
-
-    blanks_exist = True
+    sample_directory = os.path.join("/Users", "roger", "Git", "ms2analyte", "data", "test_input", "Waters_DDA_mzML_test", "Samples")
+    blank_directory = os.path.join("/Users", "roger", "Git", "ms2analyte", "data", "test_input", "Waters_DDA_mzML_test", "Blanks")
+    output_directory = os.path.join("/Users", "roger", "Git", "ms2analyte", "data", "test_input", "Waters_DDA_mzML_test", "Output")
+    blanks_exist = False
     replicate_count = 1
     ms2_exists = True
-    ms2_type = "DIA"
+    ms2_type = "DDA"
     ims_exists = False
     instrument_manufacturer = "Waters"
     instrument_model = "Synapt"
     instrument_software = "MassLynx"
     ms_data_file_type = "mzML"
     ms_data_file_suffix = "mzML"
-    experiment_name = "Test_Analysis"
-
-
-
-
-    # blanks_exist = False
-    # replicate_count = 1
-    # ms2_exists = True
-    # ms2_type = "DDA"
-    # ims_exists = False
-    # instrument_manufacturer = "Waters"
-    # instrument_model = "Synapt"
-    # instrument_software = "MassLynx"
-    # ms_data_file_type = "mzML"
-    # ms_data_file_suffix = "mzML"
-    # experiment_name = "DDA_mzML_test"
-
-
-
-
-
-
-    # blanks_exist = True
-    # replicate_count = 3
-    # ms2_exists = True
-    # ms2_type = "DIA"
-    # ims_exists = True
-    # instrument_manufacturer = "Waters"
-    # instrument_model = "Synapt"
-    # instrument_software = "MassLynx"
-    # ms_data_file_type = "func001"
-    # ms_data_file_suffix = "csv"
-    # experiment_name = "NPNPD_GridSamplingTest_20210217"
-
-
-
-
+    experiment_name = "DDA_mzML_test"
 
     # Trevor data MSConvert
 

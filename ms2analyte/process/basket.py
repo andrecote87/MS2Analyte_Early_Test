@@ -96,8 +96,8 @@ def sample_set_basket(input_structure, input_type, sample_name_list):
                             if not compare_replicate_analyte.is_basketed:
                                 if rt_features.rt_match(sample_replicate_analyte.replicate_analyte_rt,
                                                         compare_replicate_analyte.replicate_analyte_rt):
-                                    if analyte_match.relative_intensity_match(sample_replicate_analyte.replicate_analyte_ms1_spectrum,
-                                                                          compare_replicate_analyte.replicate_analyte_ms1_spectrum, "OR"):
+                                    if analyte_match.relative_intensity_match(sample_replicate_analyte.replicate_analyte_spectrum,
+                                                                          compare_replicate_analyte.replicate_analyte_spectrum, "OR"):
                                         compare_replicate_analyte.is_basketed = True
                                         experiment_analyte_replicate_analytes.append(compare_replicate_analyte)
                                         break
