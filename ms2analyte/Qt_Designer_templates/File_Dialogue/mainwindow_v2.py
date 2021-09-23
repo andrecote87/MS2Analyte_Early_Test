@@ -318,7 +318,7 @@ class Ui_MainWindow(QObject):
 
 
 
-                self.horizontalLayout_11 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_11 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_11.setObjectName("horizontalLayout_11")
         self.ThresholdLabel = QtWidgets.QLabel(self.layoutWidget1)
         self.ThresholdLabel.setEnabled(True)
