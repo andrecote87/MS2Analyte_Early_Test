@@ -6,7 +6,7 @@ file open dialogue window for MS2Analyte
 
 import sys
 import time
-
+import os
 from PyQt5 import QtWidgets
 
 from ms2analyte.Qt_Designer_templates.File_Dialogue.mainwindow_v2 import Ui_MainWindow
@@ -36,7 +36,7 @@ class MainWindowUIClass(Ui_MainWindow):
         self.SoftwareComboBox.addItem("MassLynx")
         self.FileTypeComboBox.addItem("func001")
         self.FileTypeComboBox.addItem("mzML")
-        self.FileTypeComboBox.addItem("Proteowizard mzML")
+
 
         # Capture initial states for all experiment check boxes
         self.experiment_parameters.update_blanks_exist(self.BlanksCheckBox.isChecked())
@@ -266,8 +266,7 @@ class MainWindowUIClass(Ui_MainWindow):
                                                                     self.instrument_parameters)
             run_analysis(self.input_data_structure)
             self.textBrowser.append("Analysis complete")
-            time.sleep(2)
-            sys.exit()
+
         else:
             for warning in warnings_list:
                 self.textBrowser.append(warning)

@@ -23,13 +23,13 @@ def run_analysis(input_structure):
     # analyte ids from the single replicate data
 
     if input_structure.replicate_count > 1:
-        replicate_compare.sample_consensus_analytes(input_structure, "Samples")
+        replicate_compare.sample_consensus_analytes(input_structure, "Samples", "ms1")
     else:
-        replicate_compare.sample_consensus_analytes_no_replicates(input_structure, "Samples")
+        replicate_compare.sample_consensus_analytes_no_replicates(input_structure, "Samples", "ms1")
 
     # basket sample set
 
-    basket.sample_set_basket_peak_shape(input_structure, "Samples", sample_list)
+    basket.sample_set_basket(input_structure, "Samples", sample_list)
     experiment_analyte_sample_list = basket.experiment_analyte_sample_analyte_dict(input_structure, "Samples")
     basket.input_data_sample_annotate(input_structure, "Samples", sample_list, experiment_analyte_sample_list)
     basket.create_experiment_analyte_spectra(input_structure, "Samples", sample_list, experiment_analyte_sample_list)
@@ -38,11 +38,11 @@ def run_analysis(input_structure):
 
     if input_structure.blanks_exist:
         if input_structure.replicate_count > 1:
-            replicate_compare.sample_consensus_analytes(input_structure, "Blanks")
+            replicate_compare.sample_consensus_analytes(input_structure, "Blanks", "ms1")
         else:
-            replicate_compare.sample_consensus_analytes_no_replicates(input_structure, "Blanks")
+            replicate_compare.sample_consensus_analytes_no_replicates(input_structure, "Blanks", "ms1")
 
-        basket.sample_set_basket_peak_shape(input_structure, "Blanks", blank_list)
+        basket.sample_set_basket(input_structure, "Blanks", blank_list)
         experiment_analyte_sample_list = basket.experiment_analyte_sample_analyte_dict(input_structure, "Blanks")
         basket.create_experiment_analyte_spectra(input_structure, "Blanks", blank_list, experiment_analyte_sample_list)
 

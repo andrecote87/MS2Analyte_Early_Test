@@ -96,8 +96,8 @@ def sample_set_basket(input_structure, input_type, sample_name_list):
                             if not compare_replicate_analyte.is_basketed:
                                 if rt_features.rt_match(sample_replicate_analyte.replicate_analyte_rt,
                                                         compare_replicate_analyte.replicate_analyte_rt):
-                                    if analyte_match.relative_intensity_match(sample_replicate_analyte.replicate_analyte_spectrum,
-                                                                          compare_replicate_analyte.replicate_analyte_spectrum, "OR"):
+                                    if analyte_match.relative_intensity_match(sample_replicate_analyte.replicate_analyte_ms1_spectrum,
+                                                                          compare_replicate_analyte.replicate_analyte_ms1_spectrum, "OR"):
                                         compare_replicate_analyte.is_basketed = True
                                         experiment_analyte_replicate_analytes.append(compare_replicate_analyte)
                                         break
@@ -155,7 +155,7 @@ def sample_set_basket_peak_shape(input_structure, input_type, sample_name_list):
 
         sample_mass_spectra.append([sample_name, sorted(sample_replicate_analytes, key=attrgetter("max_intensity"),
                                                         reverse=True)])
-
+    print("Finished loading sample spectra")
     # If there is more than one sample, compare. Otherwise, assign an experiment analyte id to each replicate analyte
 
     if len(sample_mass_spectra) > 1:
@@ -165,10 +165,12 @@ def sample_set_basket_peak_shape(input_structure, input_type, sample_name_list):
         # Note that a different strategy is required for the last sample in the list (see below)
 
         for index, sample in enumerate(sample_mass_spectra[:-1]):
+            print("Starting sample " + sample[0])
             with open((os.path.join(input_structure.output_directory, input_type,
-                                    sample[0] + "_replicated_tableau_output.csv"))) as sample_file:
+                                    str(sample[0]) + "_ms1_replicated_tableau_output.csv"))) as sample_file:
                 sample_df = pd.read_csv(sample_file)
             for sample_replicate_analyte in sample[1]:
+                print("Starting replicate analyte " + str(sample_replicate_analyte.replicate_analyte_id))
                 if not sample_replicate_analyte.is_basketed:
                     sample_replicate_analyte.is_basketed = True
                     sample_peak_df = sample_df[sample_df["replicate_analyte_id"] == sample_replicate_analyte.replicate_analyte_id]
@@ -179,18 +181,20 @@ def sample_set_basket_peak_shape(input_structure, input_type, sample_name_list):
 
                     for sample_data in sample_mass_spectra[index + 1:]:
                         with open((os.path.join(input_structure.output_directory, input_type,
-                                                sample_data[0] + "_replicated_tableau_output.csv"))) as compare_file:
+                                                str(sample_data[0]) + "_ms1_replicated_tableau_output.csv"))) as compare_file:
                             compare_df = pd.read_csv(compare_file)
                         for compare_replicate_analyte in sample_data[1]:
                             if not compare_replicate_analyte.is_basketed:
                                 compare_peak_df = compare_df[compare_df["replicate_analyte_id"] == compare_replicate_analyte.replicate_analyte_id]
+                                # Make sure there are at least a minimum number of overlapping scans between peaks
                                 if rt_features.rt_peak_shape_match(sample_peak_df, compare_peak_df):
                                 # if rt_features.rt_match(sample_replicate_analyte.replicate_analyte_rt,
                                 #                         compare_replicate_analyte.replicate_analyte_rt):
-                                    if analyte_match.relative_intensity_match(sample_replicate_analyte.replicate_analyte_spectrum,
-                                                                              compare_replicate_analyte.replicate_analyte_spectrum,
+                                    if analyte_match.relative_intensity_match(sample_replicate_analyte.replicate_analyte_ms1_spectrum,
+                                                                              compare_replicate_analyte.replicate_analyte_ms1_spectrum,
                                                                               "OR"):
                                         compare_replicate_analyte.is_basketed = True
+                                        print("Found match")
                                         experiment_analyte_replicate_analytes.append(compare_replicate_analyte)
                                         break
 

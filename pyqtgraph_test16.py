@@ -1,3 +1,4 @@
+
 import sys
 import os
 from PyQt5 import QtCore, QtWidgets
@@ -41,6 +42,7 @@ from PyQt5.QtWidgets import *
 from ms2analyte.file_open_dialogue import MainWindowUIClass
 from PyQt5 import uic
 from PyQt5.QtWidgets import QMessageBox
+
 
 
 global open_state
@@ -556,7 +558,6 @@ def import_ms2_dataframe(input_structure, input_type, sample_name):
 
 # input_structure = data_import.input_data_structure()
 
-
 class NotEmptyValidator(QValidator):
 	def validate(self, text:str, pos):
 		if bool(text.strip()):
@@ -564,6 +565,7 @@ class NotEmptyValidator(QValidator):
 		else:
 			state = QValidator.Intermediate
 		return state, text, pos
+
 
 
 
@@ -821,7 +823,7 @@ class Window (QDialog):
 		self.open_recent_action = QAction('Open Recent', app)
 		self.exit_action = QAction('Exit', app)
 		self.exit_action.triggered.connect(exit)
-
+    
 		self.file_menu.addAction(self.open_action)
 
 		self.file_menu.addAction(self.exit_action)
@@ -898,14 +900,12 @@ class Window (QDialog):
 		self.setWindowFlags(self.windowFlags() |
 			QtCore.Qt.WindowMaximizeButtonHint |
 			QtCore.Qt.WindowSystemMenuHint)
-
-
-
 		self.show()
 		start_message = QMessageBox()
 		start_message.setWindowTitle("MS2Analyte")
-		start_message.setText('Welcome to MS2Analyte. To get started, run a new analysis or open an existing output folder')
+		start_message.setText('Welcome to MS2Analyte,\n \nto get started, run a new analysis (Analysis --> New Analysis) or open an existing output folder (File --> Open).')
 		x = start_message.exec_()
+
 	def sample_export(self):
 		state = State(self.Nullbutton.isChecked(), self.Blankbutton.isChecked(), self.mMinBox.text(), self.mMaxBox.text(), self.rtMinBox.text(), self.rtMaxBox.text(),self.Toggle_rt.isChecked())
 
@@ -1036,6 +1036,7 @@ class Window (QDialog):
 ##################### Right hand side of interface (Region 2) #########################
 		self.comboBox = QComboBox(self)
 		self.comboAnalyte = QComboBox(self)
+		self.comboBox.currentTextChanged.connect(self.change_sample)
 		self.comboBox.currentTextChanged.connect(self.reset_all)
 		self.comboBox.currentTextChanged.connect(self.Sample_Plot_DF)
 		self.comboBox.currentTextChanged.connect(self.Plot_Sample)
@@ -1043,10 +1044,10 @@ class Window (QDialog):
 		self.comboBox.currentTextChanged.connect(self.Plot_Replicate)
 		self.comboBox.currentTextChanged.connect(self.Plot_ms1)
 		self.comboBox.currentTextChanged.connect(self.Plot_ms2)
+		self.comboBox.currentTextChanged.connect(self.Plot_Analyte_Legend)
 
 
 
-		self.chooseSample = QLabel("Choose Sample", self)
 
 		
 		# self.chooseAnalyte = QLabel("Choose Analyte", self)
@@ -1217,10 +1218,8 @@ class Window (QDialog):
 		else:
 			self.mMaxBox.setText(str(0))
 
-
-
-
 		self.mMaxBox.setValidator(QDoubleValidator())
+
 		self.mMaxBox.setAlignment(Qt.AlignRight)
 		self.mMaxBox.textChanged.connect(self.mMaxLimit)
 
@@ -1231,8 +1230,8 @@ class Window (QDialog):
 
 		self.rtMinBox = QLineEdit(self)
 		self.rtMinBox.setText('0')
-
 		self.rtMinBox.setValidator(QDoubleValidator())
+
 		self.rtMinBox.setAlignment(Qt.AlignRight)
 		self.rtMinBox.textChanged.connect(self.rtMinLimit)
 
@@ -1247,9 +1246,8 @@ class Window (QDialog):
 			self.rtMaxBox.setText(str(0))
 
 
-
-
 		self.rtMaxBox.setValidator(QDoubleValidator())
+
 		self.rtMaxBox.setAlignment(Qt.AlignRight)
 		self.rtMaxBox.textChanged.connect(self.rtMaxLimit)
 
@@ -1453,8 +1451,8 @@ class Window (QDialog):
 		layoutRegion2 = QGridLayout()
 
 		# layoutRegion2.setRowStretch(0, 1)
-		layoutRegion2.addWidget(self.chooseSample,0,0)
-		layoutRegion2.addWidget(self.comboBox,0,1)
+
+		layoutRegion2.addWidget(self.comboBox,0,0,1,2)
 		layoutRegion2.addWidget(self.chooseAnalyte,1,0)
 		layoutRegion2.addWidget(self.comboAnalyte,1,1)
 
@@ -1519,15 +1517,17 @@ class Window (QDialog):
 
 
 
+
 		self.rt_plot = pg.PlotWidget()
 		self.rt_plot.setStyleSheet("background-color: white; margin:0.001px; border:1px solid black; ")
 		self.rt_plot.setLabel(axis='bottom',text='rt',**{ 'font-size': '10pt'})
 		self.rt_plot.setLabel(axis='left',text='Intensity',**{ 'font-size': '10pt'})
 		
 		self.rt_plot.setMouseEnabled(x=True, y=False)
-
-
+    
+    
 		self.rt_plot.setTitle("No Data Loaded")
+
 		self.ms1_plot = pg.PlotWidget()
 		self.ms1_plot.setStyleSheet("background-color: white; margin:0.001px; border:1px solid black; ")
 		self.ms1_plot.setLabel(axis='bottom',text='m/z',**{ 'font-size': '10pt'})
@@ -1584,8 +1584,6 @@ class Window (QDialog):
 		self.rt_r3_plot.setStyleSheet("background-color: white; margin:0.001px; border:1px solid black; ")
 		self.rt_r3_plot.setMouseEnabled(x=True, y=False)
 
-
-
 		# self.No_Data_Label1 = QLabel('No Data Loaded')
 		# self.No_Data_Label2 = QLabel('No Data Loaded')
 		# self.No_Data_Label3 = QLabel('No Data Loaded')
@@ -1594,7 +1592,6 @@ class Window (QDialog):
 		# self.No_Data_Label6 = QLabel('No Data Loaded')
 		# self.No_Data_Label7 = QLabel('No Data Loaded')
 		# self.No_Data_Label8 = QLabel('No Data Loaded')
-
 
 
 ############# Experiment and Diversity #############################
@@ -1660,7 +1657,6 @@ class Window (QDialog):
 		layoutRegion3.addWidget(self.rt_r1_plot,4,1)
 		layoutRegion3.addWidget(self.rt_r2_plot,5,1)
 		layoutRegion3.addWidget(self.rt_r3_plot,6,1)
-
 		# layoutRegion3.addWidget(self.No_Data_Label1,0,1)
 		# layoutRegion3.addWidget(self.No_Data_Label2,1,1)
 		# layoutRegion3.addWidget(self.No_Data_Label3,1,1)
@@ -1669,6 +1665,7 @@ class Window (QDialog):
 		# layoutRegion3.addWidget(self.No_Data_Label6,4,1)
 		# layoutRegion3.addWidget(self.No_Data_Label7,5,1)
 		# layoutRegion3.addWidget(self.No_Data_Label8,6,1)
+
 
 		layoutRegion5 = QGridLayout()
 		layoutRegion5.addWidget(self.ms1_plot,0,1)
@@ -2025,7 +2022,21 @@ class Window (QDialog):
 			Experiment_State = tab_state.return_experiment_state()
 			print("TESTTESTTEST")
 			print('Loading Sample Tab**')
-			state = State(self.Nullbutton.isChecked(), self.Blankbutton.isChecked(), 0, 1200, 0, 7,self.Toggle_rt.isChecked())
+			comboText = self.comboBox.currentText()
+			total_df_test = import_dataframe(output_path, input_type, comboText)
+
+
+			max_mass = total_df_test[total_df_test.mz == total_df_test.mz.max()].mz
+			
+			max_mass_value = max_mass.to_numpy()
+
+			max_rt = total_df_test[total_df_test.rt == total_df_test.rt.max()].rt
+			
+			max_rt_value = max_rt.to_numpy()
+
+
+
+			state = State(self.Nullbutton.isChecked(), self.Blankbutton.isChecked(), 0, max_mass_value, 0, max_rt_value,self.Toggle_rt.isChecked())
 			Toggle_rt = state.return_Toggle_rt()
 
 			if Sample_State == False:
@@ -2045,7 +2056,12 @@ class Window (QDialog):
 
 				sorted_df_mz, sorted_df_rt= self.Sample_Plot_DF()
 				print('ANALYTE ID 2',sorted_df_mz[sorted_df_mz.analyte_id == 2])
-
+				print('ANALYTE ID 2',sorted_df_rt[sorted_df_rt.analyte_id == 2])
+				# sorted_df_mz = sorted_df_mz.analyte_id.dropna()
+				# sorted_df_mz = sorted_df_rt.analyte_id.dropna()
+				print(sorted_df_mz)
+				print(sorted_df_rt)
+				print('test1')
 
 
 				mz_array = []
@@ -2065,55 +2081,61 @@ class Window (QDialog):
 					# df.sort_values('scan', inplace=True)
 
 				if chooseAnalyte == "Sample Analyte ID":
+					print('test2')
 					for analyte_id in sorted_df_mz.analyte_id.unique():
-
+						print('test3')
 						mz_array.append([sorted_df_mz[sorted_df_mz["analyte_id"] == analyte_id]["mz"].to_numpy(),
 					                     sorted_df_mz[sorted_df_mz["analyte_id"] == analyte_id]["intensity"].to_numpy()])
 
 						analyte_mz_array.append(analyte_id)
 
 
+					print('test4')
 
 					if Toggle_rt == True:
-					
+						print('test5')
 
 						for analyte_id in sorted_df_rt.analyte_id.unique():
 							rt_array.append([sorted_df_rt[sorted_df_rt["analyte_id"] == analyte_id]["rt"].to_numpy(),
 						                     sorted_df_rt[sorted_df_rt["analyte_id"] == analyte_id]["intensity"].to_numpy()])
 							analyte_rt_array.append(analyte_id)
 					else:
-
-
+						print('test6')
 
 						for analyte_id in sorted_df_rt.analyte_id.unique():
+
 
 							analyte_df = sorted_df_rt[sorted_df_rt.analyte_id == analyte_id]
 
 							max_scan_df = analyte_df[analyte_df.intensity == analyte_df.intensity.max()]
 
 							max_peak_id_array = max_scan_df.peak_id.to_numpy()
+
+
 							max_peak_id = int(max_peak_id_array[0])
 
 
 
 
+
 							sorted_df_rt1 = analyte_df[analyte_df.peak_id == int(max_peak_id)]
+							print('test12')
 
 
 							rt_array.append([sorted_df_rt1[sorted_df_rt1["analyte_id"] == analyte_id]["rt"].to_numpy(),
 						                     sorted_df_rt1[sorted_df_rt1["analyte_id"] == analyte_id]["intensity"].to_numpy()])
 							analyte_rt_array.append(analyte_id)
-
-
+							print('test13')
+					print('test7')
 					analyte_mz_array = [0 if str(i) == 'nan' else i for i in analyte_mz_array]
 
 					analyte_rt_array = [0 if str(i) == 'nan' else i for i in analyte_rt_array]
-
+					print('test8')
 
 
 					analyte_colour_mz_array = [0]*len(analyte_mz_array)
 					analyte_colour_rt_array = [0]*len(analyte_rt_array)
-
+					print('test9')
 					i = 0
 					while i < len(analyte_mz_array):
 						analyte_colour_mz_array[i] = int((analyte_mz_array[i] + 1) % 299)
@@ -2283,12 +2305,12 @@ class Window (QDialog):
 						for analyte in mz_array:
 
 
-							#self.mz_plot.plot( x=analyte[0], y=analyte[1], pen=None, symbolPen=pg.intColor( analyte_colour_array[colour],  values=5, alpha=alpha), symbolBrush=pg.intColor( analyte_colour_array[colour],values=5,alpha=alpha),symbol='o', symbolSize=3)
-							#colour+=1
 
 							if analyte_mz_array[colour] == float(comboAnalyte):
 
 
+								analyte_intensity_max = max(analyte[1])
+								analyte_intensity_min = min(analyte[1])
 								self.test = self.mz_plot.plot( x=analyte[0], y=analyte[1], pen=None, symbolPen=pg.intColor( analyte_colour_mz_array[colour],  values=5, alpha=255), symbolBrush=pg.intColor( analyte_colour_mz_array[colour],values=5,alpha=255),symbol='o', symbolSize=3)
 								self.test.sigPointsClicked.connect(self.clicked)
 							else:
@@ -2356,7 +2378,9 @@ class Window (QDialog):
 
 							if analyte_mz_array[colour] == float(comboAnalyte):
 
-
+								analyte_intensity_max = max(analyte[1])
+								analyte_intensity_min = min(analyte[1])
+								print('ANALYTE INTENSITY',analyte_intensity)
 								self.test = self.mz_plot.plot( x=analyte[0], y=analyte[1], pen=None, symbolPen=pg.intColor( analyte_colour_mz_array[colour],  values=5, alpha=255), symbolBrush=pg.intColor( analyte_colour_mz_array[colour],values=5,alpha=255),symbol='o', symbolSize=3)
 								self.test.sigPointsClicked.connect(self.clicked)
 							else:
@@ -2416,12 +2440,14 @@ class Window (QDialog):
 
 
 
-
-
 				self.mz_plot.enableAutoRange(axis=None)
 				self.rt_plot.enableAutoRange(axis=None)
 				state = State(self.Nullbutton.isChecked(), self.Blankbutton.isChecked(), self.mMinBox.text(), self.mMaxBox.text(), self.rtMinBox.text(), self.rtMaxBox.text(), self.Toggle_rt.isChecked())
+				# self.mz_plot.setYRange(0,max(analyte_intensity))
+				if comboAnalyte != "Show All":
 
+
+					self.mz_plot.setYRange(float(analyte_intensity_min),float(analyte_intensity_max))
 				self.mz_plot.setXRange(float(state.return_massMin_state()),float(state.return_massMax_state()))
 				self.rt_plot.setXRange(float(state.return_rtMin_state()),float(state.return_rtMax_state()))
 			else:
@@ -2461,7 +2487,18 @@ class Window (QDialog):
 		Sample_State = tab_state.return_sample_state()
 		Replicate_State = tab_state.return_replicate_state()
 		Experiment_State = tab_state.return_experiment_state()
-		state = State(self.Nullbutton.isChecked(), self.Blankbutton.isChecked(), 0, 1200, 0, 7,self.Toggle_rt.isChecked())
+		comboText = self.comboBox.currentText()
+		total_df_test = import_dataframe(output_path, input_type, comboText)
+
+
+		max_mass = total_df_test[total_df_test.mz == total_df_test.mz.max()].mz
+		
+		max_mass_value = max_mass.to_numpy()
+
+		max_rt = total_df_test[total_df_test.rt == total_df_test.rt.max()].rt
+		
+		max_rt_value = max_rt.to_numpy()
+		state = State(self.Nullbutton.isChecked(), self.Blankbutton.isChecked(), 0, max_mass_value, 0,max_rt_value,self.Toggle_rt.isChecked())
 		Toggle_rt = state.return_Toggle_rt()
 
 
@@ -2674,7 +2711,8 @@ class Window (QDialog):
 
 							if analyte_mz_array_r1[colour] == float(comboAnalyte):
 
-
+								analyte_intensity_max = max(analyte[1])
+								analyte_intensity_min = min(analyte[1])
 								self.test = self.mz_r1_plot.plot( x=analyte[0], y=analyte[1], pen=None, symbolPen=pg.intColor( analyte_colour_mz_array_r1[colour],  values=5, alpha=255), symbolBrush=pg.intColor( analyte_colour_mz_array_r1[colour],values=5,alpha=255),symbol='o', symbolSize=3)
 								self.test.sigPointsClicked.connect(self.clicked)
 							else:
@@ -2691,7 +2729,8 @@ class Window (QDialog):
 
 							if analyte_rt_array_r1[colour] == float(comboAnalyte):
 
-
+								analyte_intensity_max = max(analyte[1])
+								analyte_intensity_min = min(analyte[1])
 								self.rt_r1_plot.plot( x=analyte[0], y=analyte[1], fillLevel=-0.3,  pen=pg.intColor(analyte_colour_rt_array_r1[colour],  values=5, alpha=255) ,brush=pg.intColor(analyte_colour_rt_array_r1[colour], alpha=50))
 								
 
@@ -2737,7 +2776,8 @@ class Window (QDialog):
 
 							if analyte_mz_array_r1[colour] == float(comboAnalyte):
 
-
+								analyte_intensity_max = max(analyte[1])
+								analyte_intensity_min = min(analyte[1])
 								self.test = self.mz_r1_plot.plot( x=analyte[0], y=analyte[1], pen=None, symbolPen=pg.intColor( analyte_colour_mz_array_r1[colour],  values=5, alpha=255), symbolBrush=pg.intColor( analyte_colour_mz_array_r1[colour],values=5,alpha=255),symbol='o', symbolSize=3)
 								self.test.sigPointsClicked.connect(self.clicked)
 							else:
@@ -2754,7 +2794,8 @@ class Window (QDialog):
 
 							if analyte_rt_array_r1[colour] == float(comboAnalyte):
 
-
+								analyte_intensity_max = max(analyte[1])
+								analyte_intensity_min = min(analyte[1])
 								self.rt_r1_plot.plot( x=analyte[0], y=analyte[1], pen=None, symbolPen=pg.intColor(analyte_colour_rt_array_r1[colour],  values=5, alpha=255), symbolBrush=pg.intColor( analyte_colour_rt_array_r1[colour], values=5, alpha=255),symbol='o', symbolSize=3)
 								
 
@@ -2938,7 +2979,6 @@ class Window (QDialog):
 
 
 
-
 				if chooseAnalyte == "Experiment Analyte ID":
 					print('Loading Replicate Tab')
 					for analyte_id in sorted_df_mz_r2.experiment_analyte_id.unique():
@@ -3010,15 +3050,6 @@ class Window (QDialog):
 						i+=1
 
 
-
-
-
-
-
-
-
-
-
 				self.rt_r2_plot.clear()
 				self.mz_r2_plot.clear()
 				print('Loading Replicate Tab')
@@ -3059,7 +3090,8 @@ class Window (QDialog):
 
 							if analyte_rt_array_r2[colour] == float(comboAnalyte):
 
-
+								analyte_intensity_max_r2 = max(analyte[1])
+								analyte_intensity_min_r2 = min(analyte[1])
 								self.rt_r2_plot.plot( x=analyte[0], y=analyte[1], fillLevel=-0.3, pen=pg.intColor(analyte_colour_rt_array_r2[colour],  values=5, alpha=255),brush=pg.intColor(analyte_colour_rt_array_r2[colour], alpha=50))
 								
 
@@ -3126,6 +3158,9 @@ class Window (QDialog):
 
 								if analyte_rt_array_r2[colour] == float(comboAnalyte):
 
+
+									analyte_intensity_max_r2 = max(analyte[1])
+									analyte_intensity_min_r2 = min(analyte[1])
 
 									self.rt_r2_plot.plot( x=analyte[0], y=analyte[1], pen=None, symbolPen=pg.intColor(analyte_colour_rt_array_r2[colour],  values=5, alpha=255), symbolBrush=pg.intColor( analyte_colour_rt_array_r2[colour], values=5, alpha=255),symbol='o', symbolSize=3)
 									
@@ -3312,7 +3347,6 @@ class Window (QDialog):
 						analyte_colour_rt_array_r3[i] = int((analyte_rt_array_r3[i] + 1) % 299)
 						i+=1
 
-
 				if chooseAnalyte == "Experiment Analyte ID":
 
 
@@ -3387,8 +3421,6 @@ class Window (QDialog):
 
 
 
-
-
 				self.rt_r3_plot.clear()
 				self.mz_r3_plot.clear()
 				print('Loading Replicate Tab')
@@ -3426,7 +3458,8 @@ class Window (QDialog):
 
 
 							if analyte_rt_array_r3[colour] == float(comboAnalyte):
-
+								analyte_intensity_max_r3 = max(analyte[1])
+								analyte_intensity_min_r3 = min(analyte[1])
 
 								self.rt_r3_plot.plot( x=analyte[0], y=analyte[1], fillLevel=-0.3, pen=pg.intColor(analyte_colour_rt_array_r3[colour],  values=5, alpha=255),brush=pg.intColor(analyte_colour_rt_array_r3[colour], alpha=50))
 								
@@ -3490,7 +3523,8 @@ class Window (QDialog):
 
 								if analyte_rt_array_r3[colour] == float(comboAnalyte):
 
-
+									analyte_intensity_max_r3 = max(analyte[1])
+									analyte_intensity_min_r3 = min(analyte[1])
 									self.rt_r3_plot.plot( x=analyte[0], y=analyte[1], pen=None, symbolPen=pg.intColor(analyte_colour_rt_array_r3[colour],  values=5, alpha=255), symbolBrush=pg.intColor( analyte_colour_rt_array_r3[colour], values=5, alpha=255),symbol='o', symbolSize=3)
 									
 
@@ -3521,9 +3555,6 @@ class Window (QDialog):
 
 							self.rt_r3_plot.plot( x=analyte[0], y=analyte[1], pen=None, symbolPen=pg.intColor(analyte_colour_rt_array_r3[colour],  values=5), symbolBrush=pg.intColor( analyte_colour_rt_array_r3[colour], values=5),symbol='o', symbolSize=3)
 							colour+=1
-
-
-
 				if chooseAnalyte == "Experiment Analyte ID":
 
 
@@ -3620,7 +3651,8 @@ class Window (QDialog):
 							#colour+=1
 
 							if analyte_mz_array_r1[colour] == float(comboAnalyte):
-
+								analyte_intensity_max = max(analyte[1])
+								analyte_intensity_min = min(analyte[1])
 
 								self.test = self.mz_r1_plot.plot( x=analyte[0], y=analyte[1], pen=None, symbolPen=pg.intColor( analyte_colour_mz_array_r1[colour],  values=5, alpha=255), symbolBrush=pg.intColor( analyte_colour_mz_array_r1[colour],values=5,alpha=255),symbol='o', symbolSize=3)
 								self.test.sigPointsClicked.connect(self.clicked)
@@ -3637,7 +3669,8 @@ class Window (QDialog):
 
 
 							if analyte_rt_array_r1[colour] == float(comboAnalyte):
-
+								analyte_intensity_max = max(analyte[1])
+								analyte_intensity_min = min(analyte[1])
 
 								self.rt_r1_plot.plot( x=analyte[0], y=analyte[1], fillLevel=-0.3, pen=pg.intColor(analyte_colour_rt_array_r1[colour],  values=5, alpha=255),brush=pg.intColor(analyte_colour_rt_array_r1[colour], alpha=50))
 								
@@ -3683,7 +3716,8 @@ class Window (QDialog):
 								#colour+=1
 
 								if analyte_mz_array_r1[colour] == float(comboAnalyte):
-
+									analyte_intensity_max = max(analyte[1])
+									analyte_intensity_min = min(analyte[1])
 
 									self.test = self.mz_r1_plot.plot( x=analyte[0], y=analyte[1], pen=None, symbolPen=pg.intColor( analyte_colour_mz_array_r1[colour],  values=5, alpha=255), symbolBrush=pg.intColor( analyte_colour_mz_array_r1[colour],values=5,alpha=255),symbol='o', symbolSize=3)
 									self.test.sigPointsClicked.connect(self.clicked)
@@ -3701,7 +3735,8 @@ class Window (QDialog):
 
 								if analyte_rt_array_r1[colour] == float(comboAnalyte):
 
-
+									analyte_intensity_max= max(analyte[1])
+									analyte_intensity_min = min(analyte[1])
 									self.rt_r1_plot.plot( x=analyte[0], y=analyte[1], pen=None, symbolPen=pg.intColor(analyte_colour_rt_array_r1[colour],  values=5, alpha=255), symbolBrush=pg.intColor( analyte_colour_rt_array_r1[colour], values=5, alpha=255),symbol='o', symbolSize=3)
 									
 
@@ -3732,6 +3767,7 @@ class Window (QDialog):
 
 							self.rt_r1_plot.plot( x=analyte[0], y=analyte[1], pen=None, symbolPen=pg.intColor(analyte_colour_rt_array_r1[colour],  values=5), symbolBrush=pg.intColor( analyte_colour_rt_array_r1[colour], values=5),symbol='o', symbolSize=3)
 							colour+=1
+
 				#analyte_array[0] = 0
 				#print(analyte_array)
 
@@ -3759,6 +3795,19 @@ class Window (QDialog):
 				self.rt_r1_plot.setXRange(float(state.return_rtMin_state()),float(state.return_rtMax_state()))
 				self.rt_r2_plot.setXRange(float(state.return_rtMin_state()),float(state.return_rtMax_state()))
 				self.rt_r3_plot.setXRange(float(state.return_rtMin_state()),float(state.return_rtMax_state()))
+
+
+				if comboAnalyte != "Show All":
+
+
+					self.mz_r1_plot.setYRange(float(analyte_intensity_min),float(analyte_intensity_max))
+					if sorted_df_mz_r2.empty == False:
+						self.mz_r2_plot.setYRange(float(analyte_intensity_min_r2),float(analyte_intensity_max_r2))
+						if sorted_df_mz_r3.empty == False:
+							self.mz_r3_plot.setYRange(float(analyte_intensity_min_r3),float(analyte_intensity_max_r3))
+
+
+
 			else:
 				pass
 			self.c.append('Replicate Tab Loaded Succesfully')
@@ -4105,7 +4154,22 @@ class Window (QDialog):
 			# self.ms1_plot.disableAutoRange(axis=None)
 			print('PLOT MS1 BEGIN**')
 			if chooseAnalyte == "Replicate Analyte ID":
-				self.ms1_plot.setXRange(min=0,max=1200)
+
+
+				comboText = self.comboBox.currentText()
+				total_df_test = import_dataframe(output_path, input_type, comboText)
+
+
+				max_mass = total_df_test[total_df_test.mz == total_df_test.mz.max()].mz
+				
+				max_mass_value = max_mass.to_numpy()
+
+				max_rt = total_df_test[total_df_test.rt == total_df_test.rt.max()].rt
+				
+				max_rt_value = max_rt.to_numpy()
+
+
+				self.ms1_plot.setXRange(min=0,max=max_mass_value)
 				self.ms1_plot.setYRange(min=6, max=100)
 				# self.ms1_plot.setLimits(ymin=0, ymax=100)
 				ms1_data = []
@@ -4190,14 +4254,15 @@ class Window (QDialog):
 
 
 					########## Set Max and Min #################
-
 					mz_range_upper = df[df.mz == max(df.mz)].mz
 					mz_range_upper = mz_range_upper.to_numpy()
 					mz_range_lower = df[df.mz == min(df.mz)].mz
 					mz_range_lower = mz_range_lower.to_numpy()
-
-					self.ms1_plot.setXRange(min=mz_range_lower[0] - 5,max=mz_range_upper[0]+5)
-					self.ms1_plot.setYRange(min=16000, max=300000)
+					intensity_range_upper = df[df.intensity == max(df.intensity)].intensity
+					intensity_range_upper = intensity_range_upper.to_numpy()
+					# self.ms1_plot.setXRange(min=mz_range_lower[0] - 5,max=mz_range_upper[0]+5)
+					# self.ms1_plot.setYRange(min=intensity_range_upper[0]*0.06, max=intensity_range_upper[0])
+					
 
 					print('df sorted by chosen analyte',df)
 
@@ -4291,26 +4356,51 @@ class Window (QDialog):
 
 
 					mz_array = df_combine['mz'].to_numpy()
+					print('MZ ARRAY',mz_array)
+					print('test1')
+					print('DF2',df2)
+
+
+
+
+					with open((os.path.join(output_path, experiment_name + "_experiment_import_parameters.pickle")), 'rb') as f:
+						experiment_info = pickle.load(f)
+
+					if experiment_info.ms2_type == 'DDA':
+						print(df2)
+						df2 = df2.dropna()
+					print('DF2',df2)
 					intensity_array = df_combine['intensity'].to_numpy()
 					for analyte_id in df2.analyte_id.unique():
 						ms1_data.append([df2[df2["analyte_id"] == analyte_id]["intensity"].to_numpy(),
 					                     df2[df2["analyte_id"] == analyte_id]["mz"].to_numpy()])
 						analyte_id_array.append(analyte_id)
 
-					
+					print('test2')
 
 					analyte_colour_array = [0]*len(analyte_id_array)
+					print('test3')
 
 					analyte_id_array = [0 if str(z) == 'nan' else z for z in analyte_id_array]
+					print('test4')
+
 					i = 0
+					print('LENGTH ANALYTE ARRAY',len(analyte_id_array))
 					while i < len(analyte_id_array):
+						print('test5')
+						print(i)
+						print(analyte_id_array[i])
 						analyte_colour_array[i] = int((analyte_id_array[i] + 1) % 299)
 						i+=1
+
+##############################################################################################
+
 
 
 
 					colour=0
 					self.ms1_plot.clear()
+					print('MS1 DATA',ms1_data)
 					for analyte in ms1_data:
 						np.round(mz_array[0],2)
 						np.round(intensity_array[0],2)
@@ -4322,6 +4412,7 @@ class Window (QDialog):
 							
 							self.test = self.ms1_plot.plot( x=mz_array, y=intensity_array,pen=pen)
 
+							print('MS1 ARRAY ******************************************',mz_array)
 
 
 
@@ -4341,8 +4432,12 @@ class Window (QDialog):
 						else:
 							pass
 						colour +=1
+						self.ms1_plot.setXRange(min=min(mz_array) - 3,max=max(mz_array) + 3)
+						self.ms1_plot.setYRange(min=max(intensity_array)*0.06, max=max(intensity_array))
 
 
+
+###############################################################################################
 					with open((os.path.join(output_path, experiment_name + "_experiment_import_parameters.pickle")), 'rb') as f:
 						experiment_info = pickle.load(f)
 
@@ -4370,6 +4465,7 @@ class Window (QDialog):
 
 
 						unique_intensity = []
+						mass_max_min = []
 						j = 0
 
 
@@ -4383,7 +4479,7 @@ class Window (QDialog):
 							self.right_button_is_clicked = 0
 
 
-
+						self.ms1_plot.setXRange(min=min(unique_mass) - 0.02, max=max(unique_mass) + 0.02)
 						print('BUTTON IS CLICKED',self.right_button_is_clicked)
 						while j < len(unique_mass):
 
@@ -4397,7 +4493,7 @@ class Window (QDialog):
 							value = format(float(unique_mass[j]), '.4f')
 							print(value)
 							sample_analyte_df_sorted = df_combine[df_combine.mz == float(value)]
-
+							print('****************MS1 DDA DATA******************', unique_mass)
 
 
 							mass_upper_lower.append(float(unique_mass[j]) - 0.0001)
@@ -4472,6 +4568,7 @@ class Window (QDialog):
 						
 						self.ms1_plot.plot( x=mass_upper_lower, y=intensity_upper_lower,pen=pen)
 
+						# self.ms1_plot.setYRange(min=max(intensity_upper_lower)*0.06, max=max(intensity_upper_lower))
 
 						if self.right_button_is_clicked == len(unique_mass) - 1:
 							self.ms1_rightButton.setEnabled(False)
@@ -4486,31 +4583,29 @@ class Window (QDialog):
 							self.ms1_leftButton.setEnabled(True)
 
 
-						print('TEST22')
-						print(mass_upper_lower)
+
 
 
 						ms2_mass_data = []
 						ms2_sorted=ms2_sorted[ms2_sorted.ms1_average_mass == float(unique_mass[self.right_button_is_clicked])]
 						ms2_sorted.sort_values('ms2_data', inplace=True)
 						max_ms2_mass = ms2_sorted.ms2_data.max()
-						print(max_ms2_mass)
+
 						min_ms2_mass = ms2_sorted.ms2_data.min()
-						print(max_ms2_mass)
-						print(ms2_sorted)
+
 
 						ms2_mass_data = ms2_sorted.ms2_data.to_numpy()
-						print(ms2_mass_data)
+
 
 						ms2_intensity_data = ms2_sorted.Intensity.to_numpy()
-						print(ms2_intensity_data)
+
 						pen = pg.mkPen(color=(0, 0, 0))
 						self.ms2_plot.setXRange(min=float(min_ms2_mass) - 0.1,max=float(max_ms2_mass) + 0.1)
 						self.ms2_plot.setYRange(min=1200, max=20000)
 						self.ms2_plot.clear()
 						self.ms2_plot.plot( x=ms2_mass_data, y=ms2_intensity_data,pen=pen)
 
-						print(ms2_mass_data)
+
 
 						i = 0
 						while i < len(ms2_mass_data):
@@ -4529,7 +4624,20 @@ class Window (QDialog):
 								i+=1
 
 			if chooseAnalyte == "Experiment Analyte ID":
-				self.ms1_plot.setXRange(min=0,max=1200)
+				comboText = self.comboBox.currentText()
+				total_df_test = import_dataframe(output_path, input_type, comboText)
+
+
+				max_mass = total_df_test[total_df_test.mz == total_df_test.mz.max()].mz
+				
+				max_mass_value = max_mass.to_numpy()
+
+				max_rt = total_df_test[total_df_test.rt == total_df_test.rt.max()].rt
+				
+				max_rt_value = max_rt.to_numpy()
+
+
+				self.ms1_plot.setXRange(min=0,max=max_mass_value)
 				self.ms1_plot.setYRange(min=5, max=100)
 				ms1_data = []
 				analyte_id_array = []
@@ -4642,7 +4750,21 @@ class Window (QDialog):
 				print('PLOT MS2 BEGIN')
 				if chooseAnalyte == "Replicate Analyte ID":
 					print('PLOT MS2 BEGIN')
-					self.ms2_plot.setXRange(min=0,max=1200)
+
+
+					comboText = self.comboBox.currentText()
+					total_df_test = import_dataframe(output_path, input_type, comboText)
+
+
+					max_mass = total_df_test[total_df_test.mz == total_df_test.mz.max()].mz
+					
+					max_mass_value = max_mass.to_numpy()
+
+					max_rt = total_df_test[total_df_test.rt == total_df_test.rt.max()].rt
+					
+					max_rt_value = max_rt.to_numpy()
+
+					self.ms2_plot.setXRange(min=0,max=max_mass_value)
 					self.ms2_plot.setYRange(min=6, max=100)
 					# self.ms1_plot.setLimits(ymin=0, ymax=100)
 					ms2_data = []
@@ -4748,7 +4870,7 @@ class Window (QDialog):
 			comboText=self.comboBox.currentText()
 
 			sorted_df_mz = import_dataframe(output_path, input_type, comboText)
-
+			sorted_df_mz = sorted_df_mz.fillna(0)
 			# sorted_df_mz, sorted_df_rt= self.Sample_Plot_DF()
 
 
@@ -4870,7 +4992,18 @@ class Window (QDialog):
 			self.analyte_legend.setMouseEnabled(x=False, y=True)
 
 	def reset_all(self):
-			state = State(self.Nullbutton.setChecked(False), self.Blankbutton.setChecked(False), 0, 1200, 0, 7,self.Toggle_rt.setChecked(False))
+			comboText = self.comboBox.currentText()
+			total_df_test = import_dataframe(output_path, input_type, comboText)
+
+
+			max_mass = total_df_test[total_df_test.mz == total_df_test.mz.max()].mz
+			
+			max_mass_value = max_mass.to_numpy()
+
+			max_rt = total_df_test[total_df_test.rt == total_df_test.rt.max()].rt
+			
+			max_rt_value = max_rt.to_numpy()
+			state = State(self.Nullbutton.setChecked(False), self.Blankbutton.setChecked(False), 0, max_mass_value, 0, max_rt_value,self.Toggle_rt.setChecked(False))
 			self.Blankbutton.setStyleSheet("background-color : lightgreen") 
 			self.Blankbutton.setText('On')
 			self.Nullbutton.setStyleSheet("background-color : lightgreen") 
@@ -4880,22 +5013,47 @@ class Window (QDialog):
 			self.massCheckbox.setChecked(False)
 
 			self.mMinBox.setText('0')
-			self.mMaxBox.setText('1200')
+
 			self.rtMinBox.setText('0')
-			self.rtMaxBox.setText('7')
 
 
+
+
+
+			self.rtMaxBox.setText(str(round(max_rt_value[0])+1))
+			self.mMaxBox.setText(str(round(max_mass_value[0])+1))
 
 	def reset_massRange(self):
+		comboText = self.comboBox.currentText()
+		total_df_test = import_dataframe(output_path, input_type, comboText)
 
-		state = State(self.Nullbutton.isChecked(), self.Blankbutton.isChecked(), 0, 1200, self.rtMinBox.text(), self.rtMaxBox.text(),self.Toggle_rt.isChecked())
+
+		max_mass = total_df_test[total_df_test.mz == total_df_test.mz.max()].mz
+		
+		max_mass_value = max_mass.to_numpy()
+
+		max_rt = total_df_test[total_df_test.rt == total_df_test.rt.max()].rt
+		
+		max_rt_value = max_rt.to_numpy()
+		state = State(self.Nullbutton.isChecked(), self.Blankbutton.isChecked(), 0,max_mass_value, self.rtMinBox.text(), self.rtMaxBox.text(),self.Toggle_rt.isChecked())
 		self.mMinBox.setText('0')
-		self.mMaxBox.setText('1200')
+		self.mMaxBox.setText(str(round(max_mass_value[0])+1))
 
 	def reset_rtRange(self):
-		state = State(self.Nullbutton.isChecked(), self.Blankbutton.isChecked(), self.mMinBox.text(), self.mMaxBox.text(), 0, 7,self.Toggle_rt.isChecked())
+		comboText = self.comboBox.currentText()
+		total_df_test = import_dataframe(output_path, input_type, comboText)
+
+
+		max_mass = total_df_test[total_df_test.mz == total_df_test.mz.max()].mz
+		
+		max_mass_value = max_mass.to_numpy()
+
+		max_rt = total_df_test[total_df_test.rt == total_df_test.rt.max()].rt
+		
+		max_rt_value = max_rt.to_numpy()
+		state = State(self.Nullbutton.isChecked(), self.Blankbutton.isChecked(), self.mMinBox.text(), self.mMaxBox.text(), 0, max_rt_value,self.Toggle_rt.isChecked())
 		self.rtMinBox.setText('0')
-		self.rtMaxBox.setText('7')
+		self.rtMaxBox.setText(str(round(max_rt_value[0])+1))
 
 
 	def Sample_Plot_DF(self):
@@ -4982,7 +5140,7 @@ class Window (QDialog):
 
 						
 					else:
-						pass
+						total_df = total_df.fillna(0)
 
 
 					if BlankState == True:
@@ -5021,7 +5179,8 @@ class Window (QDialog):
 						total_df=total_df[total_df.replicate_analyte_id != None]
 
 					else:
-						pass
+						total_df = total_df.fillna(0)
+
 					if BlankState == True:
 						total_df=total_df[total_df.blank_analyte != True]
 					else:
@@ -5048,7 +5207,8 @@ class Window (QDialog):
 						total_df=total_df[total_df.experiment_analyte_id != None]
 
 					else:
-						pass
+						total_df = total_df.fillna(0)
+
 					if BlankState == True:
 						total_df=total_df[total_df.blank_analyte != True]
 					else:
@@ -5145,7 +5305,8 @@ class Window (QDialog):
 						total_df = total_df.dropna(subset=['analyte_id'])
 						total_df=total_df[total_df.analyte_id != None]
 					else:
-						pass
+						total_df = total_df.fillna(0)
+
 					if BlankState == True:
 						total_df=total_df[total_df.blank_analyte != True]
 					else:
@@ -5207,7 +5368,8 @@ class Window (QDialog):
 						total_df = total_df.dropna(subset=['replicate_analyte_id'])
 						total_df=total_df[total_df.replicate_analyte_id != None]
 					else:
-						pass
+						total_df = total_df.fillna(0)
+
 					if BlankState == True:
 						total_df=total_df[total_df.blank_analyte != True]
 					else:
@@ -5264,14 +5426,16 @@ class Window (QDialog):
 					sorted_df_rt_r3 = total_rt_df_r3.sort_values(by=['rt'])
 
 					#sorted_df_rt = total_df.sort_values(by=['rt'])
-
+          
+          
 
 				if chooseAnalyte== "Experiment Analyte ID":
 					if NullState == True:
 						total_df = total_df.dropna(subset=['experiment_analyte_id'])
 						total_df=total_df[total_df.experiment_analyte_id != None]
 					else:
-						pass
+						total_df = total_df.fillna(0)
+
 					if BlankState == True:
 						total_df=total_df[total_df.blank_analyte != True]
 					else:
@@ -5326,6 +5490,7 @@ class Window (QDialog):
 
 					total_rt_df_r3 = total_rt_df_r3[total_rt_df_r3.mz < float(state.return_massMax_state())]
 					sorted_df_rt_r3 = total_rt_df_r3.sort_values(by=['rt'])
+
 			else:
 				sorted_df_mz_r1 = []
 				sorted_df_mz_r2 = []
@@ -5625,6 +5790,7 @@ class Window (QDialog):
 		else:
 			self.Blankbutton.setDisabled(False)
 
+
 	def info_test(self):
 
 
@@ -5654,27 +5820,35 @@ class Window (QDialog):
 
 
 			comboText = self.comboBox.currentText()
+			print('COMBO TEXT', comboText)
 			total_df = import_dataframe(output_path, input_type, comboText)
+			print('total_df',total_df)
 
 
 
+			print('test1')
 
-
-
+			total_df = total_df.fillna(0)
 			sorted_df = total_df.dropna(subset=['analyte_id'])
+			print('test1')
 			sorted_df=total_df[total_df.analyte_id != None]
+			sorted_df=sorted_df.dropna()
+			print('test2')
 			sorted_df = sorted_df.sort_values(by=['analyte_id'])
+			print('test3')
 
 			mz_array=[]
 			analyte_array=[]
 
 			for analyte_id in sorted_df.analyte_id.unique():
-
+				
+				print(analyte_id)
 
 				analyte_array.append(int(analyte_id))
+				print('test4')
 
 
-
+			print('test5')
 			n = 0
 
 
@@ -5683,11 +5857,99 @@ class Window (QDialog):
 
 			self.comboAnalyte.blockSignals(True)
 			self.comboAnalyte.clear()
-
+			print('test6')
 			self.comboAnalyte.addItem('Show All')
 			while n < len(analyte_array):
+				if analyte_array[n] != 0:
+					self.comboAnalyte.addItem(str(analyte_array[n]))
+				
+				n+=1
+			self.comboAnalyte.blockSignals(False)
 
-				self.comboAnalyte.addItem(str(analyte_array[n]))
+			print('test test test')
+
+
+
+
+			print('===== Test Total DF')
+			total_df_test = import_dataframe(output_path, input_type, comboText)
+
+
+			max_mass = total_df_test[total_df_test.mz == total_df_test.mz.max()].mz
+			
+			max_mass_value = max_mass.to_numpy()
+
+			max_rt = total_df_test[total_df_test.rt == total_df_test.rt.max()].rt
+			
+			max_rt_value = max_rt.to_numpy()
+			self.mMaxBox.setText(str(round(max_mass_value[0])+1))
+
+
+			self.rtMaxBox.setText(str(round(max_rt_value[0])+1))
+			self.mMaxBox.setText(str(round(max_mass_value[0])+1))
+
+
+
+	def change_sample(self):
+
+
+		if open_state == 2:
+
+
+
+
+
+			# n=0
+
+			# while n < len(sample_names):
+			# 	self.comboBox.addItem(str(sample_names[n]))
+
+			# 	n+=1
+
+
+			comboText = self.comboBox.currentText()
+			print('COMBO TEXT', comboText)
+			total_df = import_dataframe(output_path, input_type, comboText)
+			print('total_df',total_df)
+
+
+
+			print('test1')
+
+			total_df = total_df.fillna(0)
+			sorted_df = total_df.dropna(subset=['analyte_id'])
+			print('test1')
+			sorted_df=total_df[total_df.analyte_id != None]
+			sorted_df=sorted_df.dropna()
+			print('test2')
+			sorted_df = sorted_df.sort_values(by=['analyte_id'])
+			print('test3')
+
+			mz_array=[]
+			analyte_array=[]
+
+			for analyte_id in sorted_df.analyte_id.unique():
+				
+				print(analyte_id)
+
+				analyte_array.append(int(analyte_id))
+				print('test4')
+
+
+			print('test5')
+			n = 0
+
+
+
+			print('ANALYTE ARRAY',analyte_array)
+
+			self.comboAnalyte.blockSignals(True)
+			self.comboAnalyte.clear()
+			print('test6')
+			self.comboAnalyte.addItem('Show All')
+			while n < len(analyte_array):
+				if analyte_array[n] != 0:
+					self.comboAnalyte.addItem(str(analyte_array[n]))
 				
 				n+=1
 			self.comboAnalyte.blockSignals(False)
@@ -5730,7 +5992,6 @@ class Window (QDialog):
 		os.startfile('README.md')
 
 	def ms1_DF_Export(self):
-
 
 		if open_state == 2:
 
@@ -5938,6 +6199,7 @@ class Window (QDialog):
 
 
 
+
 		return
 
 
@@ -6043,6 +6305,7 @@ class Window (QDialog):
 			self.Toggle_rt.setText('Toggle Scatter Plot')
 
 	def mMinLimit(self, text):
+    
 
 		print('minlimit',text)
 
@@ -6112,8 +6375,8 @@ class Window (QDialog):
 
 
 
-	def rtMinLimit(self, text):
 
+	def rtMinLimit(self, text):
 		print('minlimit',text)
 
 
@@ -6153,6 +6416,7 @@ class Window (QDialog):
 		# maxvalue=float(self.rtMaxBox.text())
 		# if maxvalue == "":
 		# 	maxvalue = 0
+
 		self.rt_plot.setXRange(min=float(text),max=maxvalue)
 		self.rt_r1_plot.setXRange(min=float(text),max=maxvalue)
 		self.rt_r2_plot.setXRange(min=float(text),max=maxvalue)
@@ -6160,7 +6424,6 @@ class Window (QDialog):
 
 
 	def rtMaxLimit(self, text):
-
 		print('maxlimit',text)
 
 
@@ -6199,6 +6462,7 @@ class Window (QDialog):
 
 		# if minvalue == "":
 		# 	minvalue = 0
+
 		self.rt_plot.setXRange(min=minvalue,max=float(text))
 		self.rt_r1_plot.setXRange(min=minvalue,max=float(text))
 		self.rt_r2_plot.setXRange(min=minvalue,max=float(text))

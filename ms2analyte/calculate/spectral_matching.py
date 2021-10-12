@@ -55,8 +55,14 @@ def weighted_match_score(vector1, vector2):
             vector1_weighted_pairwise_match += vector1[i] * weighting_factor
             vector2_weighted_pairwise_match += vector2[i] * weighting_factor
 
-    vector1_score = vector1_weighted_pairwise_match/sum(vector1)
-    vector2_score = vector2_weighted_pairwise_match/sum(vector2)
+    if sum(vector1) > 0:
+        vector1_score = vector1_weighted_pairwise_match/sum(vector1)
+    else:
+        vector1_score = 0
+    if sum(vector2) > 0:
+        vector2_score = vector2_weighted_pairwise_match/sum(vector2)
+    else:
+        vector2_score = 0
 
     if vector1_score < vector2_score:
         return vector1_score
@@ -211,12 +217,19 @@ def similarity_score(analyte1, analyte2, mass_offset):
                                         mass_peak2.relative_intensity])
 
     consensus_mass_array = np.array(consensus_mass_list)
-    analyte1_vector_array = consensus_mass_array[:, 2]
-    analyte2_vector_array = consensus_mass_array[:, 3]
+    if len(consensus_mass_array) > 0:
+        analyte1_vector_array = consensus_mass_array[:, 2]
+        analyte2_vector_array = consensus_mass_array[:, 3]
+    else:
+        analyte1_vector_array = []
+        analyte2_vector_array = []
 
     # Return match score
     # return round(cosine_score(analyte1_vector_array, analyte2_vector_array), 3)
-    return round(weighted_match_score(analyte1_vector_array, analyte2_vector_array), 3)
+    if len(analyte1_vector_array) > 0 and len(analyte2_vector_array) > 0:
+        return round(weighted_match_score(analyte1_vector_array, analyte2_vector_array), 3)
+    else:
+        return 0
 
 
 def similarity_matrix(analyte_list):

@@ -133,12 +133,9 @@ def sample_process(input_file, input_structure, input_type):
 
     # Process ms1 data
     print("Started MS1 data analysis for " + sample_name)
-    tableau.full_export(input_file, ms1_data, input_structure, input_type, subname="v0", mstype="ms1")
     ms1_data = peak_process(ms1_data, input_file, input_structure, input_type, "ms1")
-    tableau.full_export(input_file, ms1_data, input_structure, input_type, subname="v1", mstype="ms1")
     peak_list = analyte_create.peak_df_to_obj(ms1_data)
     ms1_data = analyte_create.peak_to_analyte_vectorized(peak_list, ms1_data)
-    tableau.full_export(input_file, ms1_data, input_structure, input_type, subname="v2", mstype="ms1")
     analyte_list = analyte_create.create_analytes_objects(peak_list, ms1_data)
     # analyte_list = analyte_create.analyte_isotope_filter(analyte_list)
     tableau.full_export(input_file, ms1_data, input_structure, input_type, mstype="ms1")

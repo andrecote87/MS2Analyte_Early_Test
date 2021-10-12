@@ -1,10 +1,10 @@
 # ms2analyte
 
-Processing platform for mass spectrometry data, optimized for natural products research
+Data processing platform for mass spectrometry data, optimized for natural products research
 
 ## Getting Started
 
-MS2Analyte accepts centroided mass spectrometry data from multiple instrument vendors (Waters, Thermo, Agilent) in a range of formats. mzML is the standard.
+MS2Analyte accepts centroided mass spectrometry data from multiple instrument vendors (Waters, Thermo, Bruker) in a range of formats. mzML is the standard.
 
 All files must have filenames in the format:
 
@@ -16,11 +16,18 @@ Blanks (if available) must be in a directory named 'Blanks'
 
 To run an analysis:
 
-Clone the repository, and run run_ms2analyte.py
+Clone the repository, and run pyqtgraph_test16.py
 
 ```
-python run_ms2analyte.py
+python pyqtgraph_test16.py
 ```
+
+
+This starts the MS2Analyte GUI where you may select and open an existing output folder (File --> Open) or run a new analysis (Analysis --> New).
+
+To open an existing output folder, select File and then Open from the dropdown menu. Navigate to the output folder and make sure the output folder is highlighted then click 'Open'
+
+To open the analysis GUI, select Analysis and then New from the dropdown menu.
 
 This starts the GUI for selecting input and output directories, and providing information about instrument and experiment variables
 
@@ -32,7 +39,31 @@ Many dependencies. More information coming soon.
 
 ### Installing
 
-Coming soon
+If you do not have python already, download the latest version of python here www.python.org/downloads/
+
+Windows users may download and install the Anaconda distribution platform here: www.anaconda.com/products/individual
+
+Open Anaconda Prompt to create a new python environment
+
+In the prompt, type the following:
+
+```
+conda create --name ms2analyte python=3.6
+y
+activate ms2analyte
+```
+
+you will then need to install the dependencies
+
+to do that, type the following into the prompt:
+```
+pip install PyQt5 PyQtgraph qtmodern pandas pyteomics matchms numpy pymzml
+```
+Then run the program:
+```
+python pyqtgraph_test16.py
+```
+if more dependencies are needed, just use the command pip install "package" in the prompt
 
 ## Running the tests
 
@@ -44,13 +75,13 @@ python -m unittest discover
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/rlinington/ms2analyte/tags).
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/liningtonlab/ms2analyte/tags).
 
 ## Authors
 
 * **Roger Linington** - *Initial work* - [rlinington](https://github.com/rlinington)
 
-See also the list of [contributors](https://github.com/rlinington/ms2analyte/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/liningtonlab/ms2analyte/contributors) who participated in this project.
 
 ## License
 

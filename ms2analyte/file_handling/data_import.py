@@ -155,20 +155,20 @@ def input_data_structure():
     # ms_data_file_suffix = "mzML"
     # experiment_name = "HDMSe_mzML_test"
 
-    sample_directory = os.path.join("/Users", "roger", "Git", "ms2analyte", "data", "test_input", "Waters_DDA_mzML_test", "Samples")
-    blank_directory = os.path.join("/Users", "roger", "Git", "ms2analyte", "data", "test_input", "Waters_DDA_mzML_test", "Blanks")
-    output_directory = os.path.join("/Users", "roger", "Git", "ms2analyte", "data", "test_input", "Waters_DDA_mzML_test", "Output")
-    blanks_exist = False
-    replicate_count = 1
-    ms2_exists = True
-    ms2_type = "DDA"
-    ims_exists = False
-    instrument_manufacturer = "Waters"
-    instrument_model = "Synapt"
-    instrument_software = "MassLynx"
-    ms_data_file_type = "mzML"
-    ms_data_file_suffix = "mzML"
-    experiment_name = "DDA_mzML_test"
+    # sample_directory = os.path.join("/Users", "roger", "Git", "ms2analyte", "data", "test_input", "Trevor_intensity_crash", "Samples")
+    # blank_directory = os.path.join("/Users", "roger", "Git", "ms2analyte", "data", "test_input", "Trevor_intensity_crash", "Blanks")
+    # output_directory = os.path.join("/Users", "roger", "Git", "ms2analyte", "data", "test_input", "Trevor_intensity_crash", "Output")
+    # blanks_exist = False
+    # replicate_count = 1
+    # ms2_exists = False
+    # ms2_type = "DIA"
+    # ims_exists = False
+    # instrument_manufacturer = "Waters"
+    # instrument_model = "Synapt"
+    # instrument_software = "MassLynx"
+    # ms_data_file_type = "mzML"
+    # ms_data_file_suffix = "mzML"
+    # experiment_name = "Intensity_crash_test"
 
     # Trevor data MSConvert
 
@@ -192,20 +192,20 @@ def input_data_structure():
 
     # Nick data
 
-    # sample_directory = "/Volumes/RGL_MS_data/UNB_Moorehouse/Test_func001_input/Samples"
-    # blank_directory = "/Volumes/RGL_MS_data/UNB_Moorehouse/Test_func001_input/Blanks"
-    # output_directory = "/Volumes/RGL_MS_data/UNB_Moorehouse/Test_func001_input/Output"
-    # blanks_exist = False
-    # replicate_count = 3
-    # ms2_exists = False
-    # ms2_type = "DIA"
-    # ims_exists = True
-    # instrument_manufacturer = "Waters"
-    # instrument_model = "Synapt"
-    # instrument_software = "MassLynx"
-    # ms_data_file_type = "func001"
-    # ms_data_file_suffix = "csv"
-    # experiment_name = "Moorehose_test_output"
+    sample_directory = "/Volumes/RGL_MS_data/BKD_SIL_20210129/Samples"
+    blank_directory = "/Volumes/RGL_MS_data/BKD_SIL_20210129/Blanks"
+    output_directory = "/Volumes/RGL_MS_data/BKD_SIL_20210129/Output"
+    blanks_exist = False
+    replicate_count = 4
+    ms2_exists = False
+    ms2_type = "DIA"
+    ims_exists = True
+    instrument_manufacturer = "Waters"
+    instrument_model = "Synapt"
+    instrument_software = "MassLynx"
+    ms_data_file_type = "func001"
+    ms_data_file_suffix = "csv"
+    experiment_name = "BKD_SIL_output"
 
     # IsoTracer test data
 
