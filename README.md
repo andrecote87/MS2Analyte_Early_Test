@@ -57,7 +57,9 @@ you will then need to install the dependencies
 
 to do that, type the following into the prompt:
 ```
+
 pip install PyQt5 PyQtgraph qtmodern pandas pyteomics matchms numpy pymzml
+
 ```
 Then run the program:
 ```

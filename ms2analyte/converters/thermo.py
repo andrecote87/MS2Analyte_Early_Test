@@ -63,8 +63,7 @@ def mzml(file_path):
         if spec.ms_level == 1:
             retention_time = round(spec.scan_time_in_minutes(), 4)
             drift_time = None
-            for peak in spec.peaks('reprofiled'):
-                print(peak)
+            for peak in spec.peaks('centroided'):
                 mz = round(peak[0], 4)
                 intensity = int(peak[1])
                 if intensity >= intensity_cutoff:
